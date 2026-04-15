@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ko" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>쇼핑몰</title>
+  <link rel="stylesheet" href="main.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+  <!-- ===== 모달: 로그인 ===== -->
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('loginModal')"><i class="fa fa-times"></i></button>
+      <h2 class="modal-title">로그인</h2>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>아이디 (이메일)</label>
+          <input type="text" id="loginId" placeholder="이메일을 입력하세요" onkeydown="if(event.key==='Enter')handleLogin()"/>
+        </div>
+        <div class="form-group">
+          <label>비밀번호</label>
+          <input type="password" id="loginPw" placeholder="비밀번호를 입력하세요" onkeydown="if(event.key==='Enter')handleLogin()"/>
+        </div>
+        <div class="form-options">
+          <label><input type="checkbox" id="rememberMe"/> 로그인 상태 유지</label>
+          <a href="#" onclick="switchModal('loginModal','findPwModal')">비밀번호 찾기</a>
+        </div>
+        <button class="btn-primary" onclick="handleLogin()">로그인</button>
+        <div class="modal-divider"><span>또는</span></div>
+        <button class="btn-social kakao" onclick="socialLogin('카카오')"><i class="fa-solid fa-comment"></i> 카카오로 시작하기</button>
+        <button class="btn-social naver" onclick="socialLogin('네이버')"><i class="fa-solid fa-n"></i> 네이버로 시작하기</button>
+        <p class="modal-footer-text">계정이 없으신가요? <a href="#" onclick="switchModal('loginModal','registerModal')">회원가입</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 모달: 회원가입 ===== -->
+  <div class="modal-overlay" id="registerModal">
+    <div class="modal modal-lg">
+      <button class="modal-close" onclick="closeModal('registerModal')"><i class="fa fa-times"></i></button>
+      <h2 class="modal-title">회원가입</h2>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label>이름 <span class="req">*</span></label>
+            <input type="text" id="regName" placeholder="홍길동" />
+          </div>
+          <div class="form-group">
+            <label>닉네임 <span class="req">*</span></label>
+            <input type="text" id="regNick" placeholder="사용할 닉네임" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>이메일 <span class="req">*</span></label>
+          <div class="input-with-btn">
+            <input type="email" id="regEmail" placeholder="example@email.com" />
+            <button class="btn-inline" onclick="checkEmail()">중복확인</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>비밀번호 <span class="req">*</span></label>
+          <input type="password" id="regPw" placeholder="8자 이상, 영문+숫자+특수문자" oninput="checkPwStrength(this.value)"/>
+          <div class="pw-strength" id="pwStrength"><div class="pw-bar" id="pwBar"></div></div>
+          <small id="pwMsg" class="hint"></small>
+        </div>
+        <div class="form-group">
+          <label>비밀번호 확인 <span class="req">*</span></label>
+          <input type="password" id="regPwConfirm" placeholder="비밀번호 재입력" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>생년월일</label>
+            <input type="date" id="regBirth" />
+          </div>
+          <div class="form-group">
+            <label>휴대폰 번호</label>
+            <input type="tel" id="regPhone" placeholder="010-0000-0000" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>주소</label>
+          <input type="text" id="regAddr" placeholder="주소 검색" readonly onclick="fakeAddrSearch()"/>
+          <input type="text" id="regAddrDetail" placeholder="상세 주소" style="margin-top:6px"/>
+        </div>
+        <div class="terms-box">
+          <label class="check-all"><input type="checkbox" id="agreeAll" onchange="toggleAllAgree(this)"/> <strong>전체 동의</strong></label>
+          <label><input type="checkbox" class="agree-item"/> [필수] 이용약관 동의 <a href="#">보기</a></label>
+          <label><input type="checkbox" class="agree-item"/> [필수] 개인정보 수집 및 이용 동의 <a href="#">보기</a></label>
+          <label><input type="checkbox" class="agree-item"/> [선택] 마케팅 정보 수신 동의</label>
+        </div>
+        <button class="btn-primary" onclick="handleRegister()">회원가입 완료</button>
+        <p class="modal-footer-text">이미 계정이 있으신가요? <a href="#" onclick="switchModal('registerModal','loginModal')">로그인</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 모달: 비밀번호 찾기 ===== -->
+  <div class="modal-overlay" id="findPwModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('findPwModal')"><i class="fa fa-times"></i></button>
+      <h2 class="modal-title">비밀번호 찾기</h2>
+      <div class="modal-body">
+        <p class="hint-text">가입하신 이메일로 임시 비밀번호를 발송합니다.</p>
+        <div class="form-group">
+          <label>이메일</label>
+          <input type="email" id="findEmail" placeholder="가입한 이메일 입력" />
+        </div>
+        <button class="btn-primary" onclick="sendResetEmail()">임시 비밀번호 발송</button>
+        <p class="modal-footer-text"><a href="#" onclick="switchModal('findPwModal','loginModal')">← 로그인으로 돌아가기</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 모달: 상품 상세 ===== -->
+  <div class="modal-overlay" id="productModal">
+    <div class="modal modal-product">
+      <button class="modal-close" onclick="closeModal('productModal')"><i class="fa fa-times"></i></button>
+      <div class="product-modal-body">
+        <div class="product-modal-img" id="pmImg"></div>
+        <div class="product-modal-info">
+          <span class="pm-category" id="pmCat"></span>
+          <h3 id="pmName"></h3>
+          <div class="pm-rating" id="pmRating"></div>
+          <p class="pm-price" id="pmPrice"></p>
+          <p class="pm-desc" id="pmDesc"></p>
+          <div class="pm-qty">
+            <button onclick="changeQty(-1)">−</button>
+            <span id="pmQty">1</span>
+            <button onclick="changeQty(1)">+</button>
+          </div>
+          <div class="pm-actions">
+            <button class="btn-primary" onclick="addToCartFromModal()"><i class="fa fa-cart-plus"></i> 장바구니 담기</button>
+            <button class="btn-secondary" onclick="buyNow()"><i class="fa fa-bolt"></i> 바로 구매</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== HEADER ===== -->
+  <header id="mainHeader">
+    <div class="header-top">
+      <div class="container">
+        <span class="header-notice"><i class="fa fa-truck"></i> 5만원 이상 무료배송 · 오늘 주문 내일 도착</span>
+        <div class="header-top-links">
+          <a href="#" id="loginBtn" onclick="openModal('loginModal')">로그인</a>
+          <a href="#" id="registerBtn" onclick="openModal('registerModal')">회원가입</a>
+          <a href="#" id="logoutBtn" onclick="handleLogout()" style="display:none">로그아웃</a>
+          <a href="#" id="mypageBtn" style="display:none" onclick="location.href='mypage.html'">마이페이지</a>
+          <a href="customer.html">고객센터</a>
+          </div>
+      </div>
+    </div>
+
+    <div class="header-main">
+      <div class="container">
+        <div class="logo" onclick="goHome()">Ground: Zero</div>
+        <div class="search-wrap">
+          <div class="search-box">
+            <input type="text" id="searchInput" placeholder="어떤 상품을 찾으시나요?"
+              onkeydown="if(event.key==='Enter')doSearch()"
+              oninput="showSearchSuggest(this.value)"/>
+            <button onclick="doSearch()"><i class="fa fa-search"></i></button>
+          </div>
+          <div class="search-suggest" id="searchSuggest"></div>
+        </div>
+        <div class="header-icons">
+          <button class="icon-btn" onclick="toggleWishPanel()" title="찜목록">
+            <i class="fa fa-heart"></i>
+            <span id="wishCount" class="badge" style="display:none">0</span>
+          </button>
+          <button class="icon-btn" onclick="toggleCart()" title="장바구니">
+            <i class="fa fa-shopping-bag"></i>
+            <span id="cartCount" class="badge">0</span>
+          </button>
+          <button class="icon-btn mobile-menu-btn" onclick="toggleMobileMenu()">
+            <i class="fa fa-bars"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- NAV -->
+    <nav id="mainNav">
+      <div class="container">
+        <ul class="nav-list" id="navList">
+          <li class="has-dropdown">
+            <a href="#" onclick="filterCategory('all')">전체 카테고리 <i class="fa fa-chevron-down"></i></a>
+            <div class="mega-dropdown">
+              <div class="mega-col">
+                <h4>패션</h4>
+                <a href="#" onclick="filterCategory('fashion')">여성의류</a>
+                <a href="#" onclick="filterCategory('fashion')">남성의류</a>
+                <a href="#" onclick="filterCategory('fashion')">신발</a>
+                <a href="#" onclick="filterCategory('fashion')">가방/잡화</a>
+              </div>
+              <div class="mega-col">
+                <h4>뷰티</h4>
+                <a href="#" onclick="filterCategory('beauty')">스킨케어</a>
+                <a href="#" onclick="filterCategory('beauty')">메이크업</a>
+                <a href="#" onclick="filterCategory('beauty')">헤어케어</a>
+                <a href="#" onclick="filterCategory('beauty')">향수</a>
+              </div>
+              <div class="mega-col">
+                <h4>전자기기</h4>
+                <a href="#" onclick="filterCategory('electronics')">스마트폰</a>
+                <a href="#" onclick="filterCategory('electronics')">노트북</a>
+                <a href="#" onclick="filterCategory('electronics')">오디오</a>
+                <a href="#" onclick="filterCategory('electronics')">스마트홈</a>
+              </div>
+              <div class="mega-col">
+                <h4>라이프</h4>
+                <a href="#" onclick="filterCategory('life')">가구/인테리어</a>
+                <a href="#" onclick="filterCategory('life')">주방용품</a>
+                <a href="#" onclick="filterCategory('life')">스포츠</a>
+                <a href="#" onclick="filterCategory('life')">반려동물</a>
+              </div>
+            </div>
+          </li>
+          <li><a href="#" onclick="filterCategory('fashion')">패션</a></li>
+          <li><a href="#" onclick="filterCategory('beauty')">뷰티</a></li>
+          <li><a href="#" onclick="filterCategory('electronics')">전자기기</a></li>
+          <li><a href="#" onclick="filterCategory('life')">라이프</a></li>
+          <li><a href="#" onclick="filterCategory('food')">식품</a></li>
+          <li class="nav-sale">
+            <a href="#" onclick="filterCategory('sale')">SALE <span class="sale-badge">HOT</span></a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ===== 장바구니 사이드패널 ===== -->
+  <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+  <div class="cart-panel" id="cartPanel">
+    <div class="cart-header">
+      <h3>장바구니 <span id="cartCountSide">0</span>개</h3>
+      <button onclick="toggleCart()"><i class="fa fa-times"></i></button>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <p class="cart-empty"><i class="fa fa-shopping-bag"></i><br/>장바구니가 비어 있습니다</p>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display:none">
+      <div class="cart-total"><span>합계</span><strong id="cartTotal">₩0</strong></div>
+      <button class="btn-primary" onclick="checkout()">주문하기</button>
+    </div>
+  </div>
+
+  <!-- ===== HERO BANNER ===== -->
+  <section class="hero" id="heroSection">
+    <div class="hero-slides">
+      <div class="hero-slide active"
+        style="background: linear-gradient(135deg, #0d1b3e 0%, #162447 55%, #1f3a73 100%);">
+        <div class="hero-content">
+          <span class="hero-sub">NEW ARRIVAL 2025</span>
+          <h1>프리미엄<br/><em>패션의 세계로</em></h1>
+          <p>지금 바로 최신 트렌드를 만나보세요</p>
+          <button class="hero-btn" onclick="filterCategory('fashion')">쇼핑 시작하기 <i class="fa fa-arrow-right"></i></button>
+        </div>
+        <div class="hero-deco">
+          <div class="deco-circle c1"></div>
+          <div class="deco-circle c2"></div>
+          <div class="deco-circle c3"></div>
+        </div>
+      </div>
+      <div class="hero-slide"
+        style="background: linear-gradient(135deg, #0a1628 0%, #1a2e5a 100%);">
+        <div class="hero-content">
+          <span class="hero-sub">BEAUTY SALE</span>
+          <h1>뷰티 특가<br/><em>최대 70% 할인</em></h1>
+          <p>인기 브랜드 스킨케어 &amp; 메이크업</p>
+          <button class="hero-btn" onclick="filterCategory('beauty')">지금 확인하기 <i class="fa fa-arrow-right"></i></button>
+        </div>
+      </div>
+      <div class="hero-slide"
+        style="background: linear-gradient(135deg, #0d1b3e 0%, #243b7a 100%);">
+        <div class="hero-content">
+          <span class="hero-sub">TECH WEEK</span>
+          <h1>최신 전자기기<br/><em>단독 특가</em></h1>
+          <p>스마트폰, 노트북, 오디오 최저가</p>
+          <button class="hero-btn" onclick="filterCategory('electronics')">바로가기 <i class="fa fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="hero-dots" id="heroDots">
+      <span class="dot active" onclick="goSlide(0)"></span>
+      <span class="dot" onclick="goSlide(1)"></span>
+      <span class="dot" onclick="goSlide(2)"></span>
+    </div>
+    <button class="hero-arrow left" onclick="prevSlide()"><i class="fa fa-chevron-left"></i></button>
+    <button class="hero-arrow right" onclick="nextSlide()"><i class="fa fa-chevron-right"></i></button>
+  </section>
+
+  <!-- ===== 카테고리 빠른 탐색 ===== -->
+  <section class="quick-cats">
+    <div class="container">
+      <div class="qcat-grid">
+        <div class="qcat-item" onclick="filterCategory('all')"><div class="qcat-icon">🏠</div><span>전체</span></div>
+        <div class="qcat-item" onclick="filterCategory('fashion')"><div class="qcat-icon">👗</div><span>패션</span></div>
+        <div class="qcat-item" onclick="filterCategory('beauty')"><div class="qcat-icon">💄</div><span>뷰티</span></div>
+        <div class="qcat-item" onclick="filterCategory('electronics')"><div class="qcat-icon">📱</div><span>전자기기</span></div>
+        <div class="qcat-item" onclick="filterCategory('life')"><div class="qcat-icon">🛋️</div><span>라이프</span></div>
+        <div class="qcat-item" onclick="filterCategory('food')"><div class="qcat-icon">🍎</div><span>식품</span></div>
+        <div class="qcat-item" onclick="filterCategory('sport')"><div class="qcat-icon">⚽</div><span>스포츠</span></div>
+        <div class="qcat-item" onclick="filterCategory('sale')"><div class="qcat-icon">🔥</div><span>SALE</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="main-content" id="mainContent">
+    <div class="container">
+      <div class="section-header" id="sectionHeader">
+        <div>
+          <h2 id="sectionTitle">인기 상품</h2>
+          <span id="productCount" class="product-count"></span>
+        </div>
+        <div class="filter-bar">
+          <select id="sortSelect" onchange="sortProducts(this.value)">
+            <option value="default">기본 정렬</option>
+            <option value="price-asc">낮은 가격순</option>
+            <option value="price-desc">높은 가격순</option>
+            <option value="rating">평점 높은순</option>
+            <option value="new">신상품순</option>
+          </select>
+          <div class="view-toggle">
+            <button id="gridViewBtn" class="active" onclick="setView('grid')"><i class="fa fa-th"></i></button>
+            <button id="listViewBtn" onclick="setView('list')"><i class="fa fa-list"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-grid" id="productGrid"></div>
+      <div id="noResult" class="no-result" style="display:none">
+        <i class="fa fa-search"></i>
+        <p>검색 결과가 없습니다</p>
+        <button class="btn-outline" onclick="filterCategory('all')">전체 상품 보기</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===== 이벤트 배너 ===== -->
+  <section class="event-banner">
+    <div class="container">
+      <div class="event-grid">
+        <div class="event-card ev1" onclick="filterCategory('sale')">
+          <span class="ev-sub">LIMITED OFFER</span>
+          <h3>오늘의 특가</h3>
+          <p>매일 바뀌는 타임딜 할인</p>
+          <button>지금 확인</button>
+        </div>
+        <div class="event-card ev2" onclick="openModal('registerModal')">
+          <span class="ev-sub">NEW MEMBER</span>
+          <h3>신규 가입 혜택</h3>
+          <p>가입 즉시 5,000원 쿠폰 지급</p>
+          <button>가입하기</button>
+        </div>
+        <div class="event-card ev3">
+          <span class="ev-sub">POINT BACK</span>
+          <h3>포인트 적립</h3>
+          <p>구매금액의 최대 5% 적립</p>
+          <button onclick="showToast('포인트 안내 페이지로 이동합니다')">자세히 보기</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo">Ground: Zero</div>
+          <p>쇼핑의 새로운 기준<br/>처음부터 다시 세우겠습니다</p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+          </div>
+        </div>
+        <div class="footer-links">
+          <h4>고객 서비스</h4>
+          <a href="notice.html">공지사항</a><a href="customer.html">자주 묻는 질문</a><a href="customer.html">1:1 문의</a>
+          <a href="customer.html">반품/교환 안내</a><a href="customer.html">배송 안내</a>
+        </div>
+        <div class="footer-links">
+          <h4>쇼핑 정보</h4>
+          <a href="#">이용약관</a><a href="#">개인정보처리방침</a><a href="#">사업자 정보</a>
+          <a href="#">입점 문의</a><a href="#">광고 문의</a>
+        </div>
+        <div class="footer-contact">
+          <h4>고객센터</h4>
+          <div class="cs-number">1588-0000</div>
+          <p>평일 09:00 ~ 18:00<br/>점심 12:00 ~ 13:00 (주말·공휴일 휴무)</p>
+          <div class="cs-email"><i class="fa fa-envelope"></i> baseZ00@gmail.co.kr</div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 () Inc. All rights reserved. | 사업자등록번호: 000-00-00000 | 대표: 홍길동 | 통신판매업신고: 제2025-서울-00000호</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 토스트 알림 -->
+  <div class="toast-wrap" id="toastWrap"></div>
+
+  <script src="main.js"></script>
+</body>
+</html>

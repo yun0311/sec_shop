@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>고객센터 — Ground: Zero</title>
+    <link rel="stylesheet" href="customer.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header id="mainHeader">
+        <div class="header-top">
+            <div class="container">
+                <span class="header-notice"><i class="fa fa-headset"></i> 고객센터 운영시간: 평일 09:00~18:00</span>
+                <div class="header-top-links">
+                    <a href="main.html">홈</a>
+                    <a href="notice.html">공지사항</a>
+                    <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()" title="다크모드 전환">
+                        <span class="toggle-track">
+                            <span class="toggle-thumb"></span>
+                            <i class="fa fa-sun toggle-icon sun-icon"></i>
+                            <i class="fa fa-moon toggle-icon moon-icon"></i>
+                        </span>
+                        <span class="toggle-label" id="toggleLabel">다크</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="header-main">
+            <div class="container">
+                <div class="logo" onclick="location.href='main.html'">Ground: Zero</div>
+                <nav class="header-nav">
+                    <a href="main.html">홈</a>
+                    <a href="notice.html">공지사항</a>
+                    <a href="customer.html" class="active">고객센터</a>
+                </nav>
+                <div class="header-icons">
+                    <a href="main.html" class="icon-btn" title="쇼핑 계속하기"><i class="fa fa-shopping-bag"></i></a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== PAGE HERO ===== -->
+    <section class="page-hero">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="main.html">홈</a>
+                <i class="fa fa-chevron-right"></i>
+                <span>고객센터</span>
+            </div>
+            <h1><i class="fa fa-headset"></i> 고객센터</h1>
+            <p>무엇을 도와드릴까요? 빠르고 친절하게 답변 드리겠습니다.</p>
+        </div>
+        <!-- 연락 카드 -->
+        <div class="hero-contact-bar">
+            <div class="container">
+                <div class="contact-cards">
+                    <div class="contact-card">
+                        <i class="fa fa-phone-alt"></i>
+                        <div>
+                            <strong>전화 상담</strong>
+                            <span>1588-0000</span>
+                            <small>평일 09:00 ~ 18:00</small>
+                        </div>
+                    </div>
+                    <div class="contact-card">
+                        <i class="fa fa-comment-dots"></i>
+                        <div>
+                            <strong>채팅 상담</strong>
+                            <span>실시간 채팅</span>
+                            <small>평일 09:00 ~ 21:00</small>
+                        </div>
+                    </div>
+                    <div class="contact-card">
+                        <i class="fa fa-envelope"></i>
+                        <div>
+                            <strong>이메일 문의</strong>
+                            <span>baseZ00@gmail.co.kr</span>
+                            <small>24시간 접수 · 1일 내 답변</small>
+                        </div>
+                    </div>
+                    <div class="contact-card">
+                        <i class="fa fa-clock"></i>
+                        <div>
+                            <strong>평균 응답시간</strong>
+                            <span>2시간 이내</span>
+                            <small>채팅 기준 (업무시간 내)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 메인 콘텐츠 ===== -->
+    <main class="customer-main">
+        <div class="container">
+            <div class="customer-layout">
+
+                <!-- 사이드바 -->
+                <aside class="customer-sidebar">
+                    <div class="sidebar-section">
+                        <h3>빠른 메뉴</h3>
+                        <ul>
+                            <li><a href="#faq" class="side-link active" onclick="switchTab('faq', this)"><i
+                                        class="fa fa-question-circle"></i> 자주 묻는 질문</a></li>
+                            <li><a href="#inquiry" class="side-link" onclick="switchTab('inquiry', this)"><i
+                                        class="fa fa-pen-to-square"></i> 1:1 문의</a></li>
+                            <li><a href="#tracking" class="side-link" onclick="switchTab('tracking', this)"><i
+                                        class="fa fa-truck"></i> 배송 조회</a></li>
+                            <li><a href="#return" class="side-link" onclick="switchTab('return', this)"><i
+                                        class="fa fa-rotate-left"></i> 반품/교환 안내</a></li>
+                        </ul>
+                    </div>
+                    <div class="sidebar-section sidebar-cs">
+                        <h3>전화 상담</h3>
+                        <div class="cs-phone">1588-0000</div>
+                        <p class="cs-time">평일 09:00 ~ 18:00<br />(점심 12:00 ~ 13:00)</p>
+                        <button class="btn-chat" onclick="openChat()"><i class="fa fa-comment-dots"></i> 채팅 상담
+                            시작</button>
+                    </div>
+                </aside>
+
+                <!-- 콘텐츠 영역 -->
+                <div class="customer-content">
+
+                    <!-- ===== FAQ ===== -->
+                    <section id="faq" class="tab-section active">
+                        <div class="section-header">
+                            <h2>자주 묻는 질문</h2>
+                            <p>고객님들이 가장 많이 궁금해하시는 내용을 모았습니다.</p>
+                        </div>
+                        <div class="faq-search">
+                            <input type="text" id="faqSearch" placeholder="궁금한 내용을 검색하세요..."
+                                oninput="searchFaq(this.value)" />
+                            <i class="fa fa-search"></i>
+                        </div>
+                        <div class="faq-cats">
+                            <button class="fcat-btn active" data-cat="all" onclick="filterFaq('all', this)">전체</button>
+                            <button class="fcat-btn" data-cat="order" onclick="filterFaq('order', this)">주문·결제</button>
+                            <button class="fcat-btn" data-cat="delivery"
+                                onclick="filterFaq('delivery', this)">배송</button>
+                            <button class="fcat-btn" data-cat="return"
+                                onclick="filterFaq('return', this)">반품·교환</button>
+                            <button class="fcat-btn" data-cat="member"
+                                onclick="filterFaq('member', this)">회원·포인트</button>
+                        </div>
+                        <div class="faq-list" id="faqList"></div>
+                    </section>
+
+                    <!-- ===== 1:1 문의 ===== -->
+                    <section id="inquiry" class="tab-section">
+                        <div class="section-header">
+                            <h2>1:1 문의</h2>
+                            <p>상담원이 직접 확인 후 빠르게 답변 드립니다. (평균 응답시간: 2시간 이내)</p>
+                        </div>
+                        <div class="inquiry-form-wrap">
+                            <form class="inquiry-form" onsubmit="submitInquiry(event)">
+                                <div class="form-row-2">
+                                    <div class="form-group">
+                                        <label>문의 유형 <span class="req">*</span></label>
+                                        <select id="inqType">
+                                            <option value="">선택해주세요</option>
+                                            <option value="order">주문 / 결제</option>
+                                            <option value="delivery">배송 문의</option>
+                                            <option value="return">반품 / 교환</option>
+                                            <option value="product">상품 문의</option>
+                                            <option value="member">회원 / 포인트</option>
+                                            <option value="etc">기타</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>주문번호 (해당 시)</label>
+                                        <input type="text" id="inqOrder" placeholder="예: LX-2025-0512345" />
+                                    </div>
+                                </div>
+                                <div class="form-row-2">
+                                    <div class="form-group">
+                                        <label>이름 <span class="req">*</span></label>
+                                        <input type="text" id="inqName" placeholder="홍길동" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>이메일 <span class="req">*</span></label>
+                                        <input type="email" id="inqEmail" placeholder="example@email.com" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>연락처</label>
+                                    <input type="tel" id="inqPhone" placeholder="010-0000-0000" />
+                                </div>
+                                <div class="form-group">
+                                    <label>문의 제목 <span class="req">*</span></label>
+                                    <input type="text" id="inqSubject" placeholder="문의 내용을 요약해서 입력해주세요" />
+                                </div>
+                                <div class="form-group">
+                                    <label>문의 내용 <span class="req">*</span></label>
+                                    <textarea id="inqContent" rows="6"
+                                        placeholder="문의하실 내용을 자세히 입력해주세요.&#10;주문 관련 문의는 주문번호를 함께 적어주시면 더 빠른 처리가 가능합니다."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>첨부파일 <span class="file-hint">(최대 3개, 각 10MB 이하)</span></label>
+                                    <div class="file-upload" onclick="document.getElementById('inqFile').click()">
+                                        <i class="fa fa-cloud-upload-alt"></i>
+                                        <span>파일을 클릭하거나 드래그하여 첨부</span>
+                                        <small>jpg, png, pdf 지원</small>
+                                    </div>
+                                    <input type="file" id="inqFile" multiple accept=".jpg,.jpeg,.png,.pdf"
+                                        style="display:none" onchange="handleFileSelect(this)" />
+                                    <div id="fileList" class="file-list"></div>
+                                </div>
+                                <div class="form-agree">
+                                    <label><input type="checkbox" id="inqAgree" /> 개인정보 수집 및 이용에 동의합니다. <a
+                                            href="#">[보기]</a></label>
+                                </div>
+                                <button type="submit" class="btn-submit">
+                                    <i class="fa fa-paper-plane"></i> 문의 접수하기
+                                </button>
+                            </form>
+                            <div class="inquiry-notice">
+                                <h4><i class="fa fa-info-circle"></i> 문의 전 확인해 주세요</h4>
+                                <ul>
+                                    <li>답변은 이메일로 발송되며, 스팸함도 확인해 주세요.</li>
+                                    <li>주문 관련 문의는 주문번호를 반드시 기재해 주세요.</li>
+                                    <li>반품·교환은 상품 수령 후 14일 이내에 신청 가능합니다.</li>
+                                    <li>업무시간 외 접수된 문의는 다음 영업일에 처리됩니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ===== 배송 조회 ===== -->
+                    <section id="tracking" class="tab-section">
+                        <div class="section-header">
+                            <h2>배송 조회</h2>
+                            <p>주문번호 또는 송장번호로 배송 현황을 확인하세요.</p>
+                        </div>
+                        <div class="tracking-wrap">
+                            <div class="tracking-form">
+                                <div class="tracking-input-group">
+                                    <select id="trackingType">
+                                        <option value="order">주문번호</option>
+                                        <option value="waybill">송장번호</option>
+                                    </select>
+                                    <input type="text" id="trackingNum" placeholder="번호를 입력해주세요" />
+                                    <button onclick="trackDelivery()" class="btn-track"><i class="fa fa-search"></i>
+                                        조회</button>
+                                </div>
+                            </div>
+                            <div class="tracking-result" id="trackingResult" style="display:none"></div>
+                            <div class="tracking-info">
+                                <h4>배송 정책 안내</h4>
+                                <div class="info-grid">
+                                    <div class="info-card">
+                                        <i class="fa fa-truck"></i>
+                                        <strong>무료 배송</strong>
+                                        <p>5만원 이상 구매 시 무료</p>
+                                    </div>
+                                    <div class="info-card">
+                                        <i class="fa fa-clock"></i>
+                                        <strong>배송 기간</strong>
+                                        <p>결제 완료 후 1~3 영업일</p>
+                                    </div>
+                                    <div class="info-card">
+                                        <i class="fa fa-bolt"></i>
+                                        <strong>당일 배송</strong>
+                                        <p>오후 2시 이전 주문 건</p>
+                                    </div>
+                                    <div class="info-card">
+                                        <i class="fa fa-globe"></i>
+                                        <strong>해외 배송</strong>
+                                        <p>7~14 영업일 소요</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ===== 반품/교환 안내 ===== -->
+                    <section id="return" class="tab-section">
+                        <div class="section-header">
+                            <h2>반품 / 교환 안내</h2>
+                            <p>고객님의 소중한 권리를 안내합니다.</p>
+                        </div>
+                        <div class="return-wrap">
+                            <div class="return-steps">
+                                <h4>반품·교환 신청 절차</h4>
+                                <div class="steps">
+                                    <div class="step">
+                                        <div class="step-num">1</div>
+                                        <div class="step-text"><strong>신청</strong><span>마이페이지 또는 고객센터에서 신청</span></div>
+                                    </div>
+                                    <div class="step-arrow"><i class="fa fa-chevron-right"></i></div>
+                                    <div class="step">
+                                        <div class="step-num">2</div>
+                                        <div class="step-text"><strong>수거</strong><span>택배 수거 (1~2 영업일)</span></div>
+                                    </div>
+                                    <div class="step-arrow"><i class="fa fa-chevron-right"></i></div>
+                                    <div class="step">
+                                        <div class="step-num">3</div>
+                                        <div class="step-text"><strong>검수</strong><span>상품 도착 후 검수 (1~2 영업일)</span>
+                                        </div>
+                                    </div>
+                                    <div class="step-arrow"><i class="fa fa-chevron-right"></i></div>
+                                    <div class="step">
+                                        <div class="step-num">4</div>
+                                        <div class="step-text"><strong>완료</strong><span>환불 또는 교환품 발송</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="return-policy-grid">
+                                <div class="policy-card ok">
+                                    <div class="policy-card-header"><i class="fa fa-check-circle"></i> 반품·교환 가능</div>
+                                    <ul>
+                                        <li>단순 변심 (수령 후 14일 이내)</li>
+                                        <li>상품 불량 또는 파손</li>
+                                        <li>오배송 (다른 상품이 온 경우)</li>
+                                        <li>상품 설명과 다른 경우</li>
+                                        <li>사이즈·색상 교환 (미사용 시)</li>
+                                    </ul>
+                                </div>
+                                <div class="policy-card no">
+                                    <div class="policy-card-header"><i class="fa fa-times-circle"></i> 반품·교환 불가</div>
+                                    <ul>
+                                        <li>수령 후 14일 초과</li>
+                                        <li>사용 흔적이 있는 상품</li>
+                                        <li>태그·라벨 제거된 상품</li>
+                                        <li>향수·속옷 등 위생 상품 개봉 시</li>
+                                        <li>고객 과실로 인한 파손·오염</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="return-cost-info">
+                                <h4><i class="fa fa-won-sign"></i> 반품 배송비 안내</h4>
+                                <table class="cost-table">
+                                    <thead>
+                                        <tr>
+                                            <th>구분</th>
+                                            <th>반품 배송비</th>
+                                            <th>비고</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>단순 변심</td>
+                                            <td>3,000원 (왕복)</td>
+                                            <td>고객 부담</td>
+                                        </tr>
+                                        <tr>
+                                            <td>상품 불량/오배송</td>
+                                            <td>무료</td>
+                                            <td>Ground: Zero 부담</td>
+                                        </tr>
+                                        <tr>
+                                            <td>GOLD 등급 이상</td>
+                                            <td>무료 (월 3회)</td>
+                                            <td>단순 변심 포함</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="return-btn-wrap">
+                                <button class="btn-return"
+                                    onclick="switchTab('inquiry', document.querySelector('[onclick*=inquiry]'))">
+                                    <i class="fa fa-rotate-left"></i> 반품·교환 신청하기
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== 채팅 팝업 ===== -->
+    <div class="chat-popup" id="chatPopup" style="display:none">
+        <div class="chat-header">
+            <div class="chat-status"><span class="status-dot"></span> 상담원 연결 중</div>
+            <button onclick="closeChat()"><i class="fa fa-times"></i></button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-msg bot">
+                <div class="chat-bubble">안녕하세요! Ground: Zero 고객센터입니다 😊<br />무엇을 도와드릴까요?</div>
+                <span class="chat-time">방금 전</span>
+            </div>
+        </div>
+        <div class="chat-input-wrap">
+            <input type="text" id="chatInput" placeholder="메시지를 입력하세요..."
+                onkeydown="if(event.key==='Enter')sendChat()" />
+            <button onclick="sendChat()"><i class="fa fa-paper-plane"></i></button>
+        </div>
+    </div>
+    <button class="chat-fab" id="chatFab" onclick="openChat()" title="채팅 상담">
+        <i class="fa fa-comment-dots"></i>
+        <span class="fab-badge">1</span>
+    </button>
+
+    <div class="toast-wrap" id="toastWrap"></div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">Ground: Zero</div>
+                    <p>프리미엄 쇼핑의 새로운 기준<br />고객의 만족이 저희의 최우선입니다</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>고객 서비스</h4>
+                    <a href="notice.html">공지사항</a>
+                    <a href="customer.html">자주 묻는 질문</a>
+                    <a href="customer.html">1:1 문의</a>
+                    <a href="customer.html">반품/교환 안내</a>
+                    <a href="customer.html">배송 안내</a>
+                </div>
+                <div class="footer-links">
+                    <h4>쇼핑 정보</h4>
+                    <a href="#">이용약관</a>
+                    <a href="#">개인정보처리방침</a>
+                    <a href="#">사업자 정보</a>
+                    <a href="#">입점 문의</a>
+                </div>
+                <div class="footer-contact">
+                    <h4>고객센터</h4>
+                    <div class="cs-number">1588-0000</div>
+                    <p>평일 09:00 ~ 18:00<br />점심 12:00 ~ 13:00 (주말·공휴일 휴무)</p>
+                    <div class="cs-email"><i class="fa fa-envelope"></i>baseZ00@gmail.co.kr</div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 Ground: Zero Inc. All rights reserved. | 사업자등록번호: 000-00-00000 | 대표: 홍길동</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="customer.js"></script>
+</body>
+
+</html>

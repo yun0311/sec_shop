@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>마이페이지 — Ground: Zero</title>
+    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="mypage.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header id="mainHeader">
+        <div class="header-top">
+            <div class="container">
+                <span class="header-notice"><i class="fa fa-truck"></i> 5만원 이상 무료배송 · 오늘 주문 내일 도착</span>
+                <div class="header-top-links">
+                    <a href="main.html">홈</a>
+                    <a href="main.html" id="logoutLink" onclick="handleLogout()">로그아웃</a>
+                    <a href="customer.html">고객센터</a>
+                    <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()" title="다크모드 전환">
+                        <span class="toggle-track">
+                            <span class="toggle-thumb"></span>
+                            <i class="fa fa-sun toggle-icon sun-icon"></i>
+                            <i class="fa fa-moon toggle-icon moon-icon"></i>
+                        </span>
+                        <span class="toggle-label" id="toggleLabel">다크</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="header-main">
+            <div class="container">
+                <div class="logo" onclick="location.href='main.html'">Ground: Zero</div>
+                <nav class="header-nav">
+                    <a href="main.html">홈</a>
+                    <a href="mypage.html" class="active">마이페이지</a>
+                    <a href="notice.html">공지사항</a>
+                    <a href="customer.html">고객센터</a>
+                </nav>
+                <div class="header-icons">
+                    <a href="main.html" class="icon-btn" title="쇼핑 계속하기"><i class="fa fa-shopping-bag"></i></a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- PAGE HERO -->
+    <section class="mypage-hero">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="main.html">홈</a>
+                <i class="fa fa-chevron-right"></i>
+                <span>마이페이지</span>
+            </div>
+            <div class="hero-profile">
+                <div class="avatar" id="userAvatar">?</div>
+                <div class="hero-info">
+                    <p class="hero-greeting">안녕하세요 👋</p>
+                    <h1 id="heroName">로딩 중...</h1>
+                    <span class="hero-badge"><i class="fa fa-crown"></i> 일반 회원</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-deco">
+            <div class="deco-circle dc1"></div>
+            <div class="deco-circle dc2"></div>
+        </div>
+    </section>
+
+    <!-- MAIN -->
+    <main class="mypage-main">
+        <div class="container">
+            <div class="mypage-layout">
+
+                <!-- 사이드바 -->
+                <aside class="mypage-sidebar">
+                    <div class="profile-card">
+                        <div class="profile-avatar" id="sideAvatar">?</div>
+                        <div class="profile-name" id="sideName">-</div>
+                        <div class="profile-nick" id="sideNick">-</div>
+                        <div class="profile-stats">
+                            <div class="pstat">
+                                <span class="pstat-num" id="statCart">0</span>
+                                <span class="pstat-label">장바구니</span>
+                            </div>
+                            <div class="pstat-divider"></div>
+                            <div class="pstat">
+                                <span class="pstat-num" id="statWish">0</span>
+                                <span class="pstat-label">찜</span>
+                            </div>
+                            <div class="pstat-divider"></div>
+                            <div class="pstat">
+                                <span class="pstat-num" id="statRecent">0</span>
+                                <span class="pstat-label">최근 본</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <nav class="side-nav">
+                        <a href="#section-cart" class="side-nav-item active" onclick="scrollTo('section-cart')">
+                            <i class="fa fa-shopping-cart"></i> 장바구니
+                        </a>
+                        <a href="#section-wish" class="side-nav-item" onclick="scrollTo('section-wish')">
+                            <i class="fa fa-heart"></i> 찜 목록
+                        </a>
+                        <a href="#section-recent" class="side-nav-item" onclick="scrollTo('section-recent')">
+                            <i class="fa fa-clock"></i> 최근 본 상품
+                        </a>
+                        <a href="main.html" class="side-nav-item">
+                            <i class="fa fa-store"></i> 쇼핑 계속하기
+                        </a>
+                    </nav>
+                </aside>
+
+                <!-- 콘텐츠 -->
+                <div class="mypage-content">
+
+                    <!-- 장바구니 -->
+                    <section class="mp-section" id="section-cart">
+                        <div class="mp-section-header">
+                            <div class="mp-section-title">
+                                <i class="fa fa-shopping-cart"></i>
+                                <h2>장바구니</h2>
+                                <span class="mp-count" id="cartCount">0</span>
+                            </div>
+                            <a href="main.html" class="mp-btn-outline">쇼핑 계속하기</a>
+                        </div>
+                        <div class="mp-list" id="cartList">
+                            <div class="mp-empty">
+                                <i class="fa fa-shopping-cart"></i>
+                                <p>장바구니가 비어있어요</p>
+                                <a href="main.html" class="mp-btn-fill">상품 보러가기</a>
+                            </div>
+                        </div>
+                        <div class="cart-summary" id="cartSummary" style="display:none">
+                            <div class="cart-total-row">
+                                <span>총 결제금액</span>
+                                <strong id="cartTotal">₩0</strong>
+                            </div>
+                            <button class="mp-btn-checkout" onclick="location.href='main.html'">
+                                <i class="fa fa-credit-card"></i> 주문하기
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- 찜 목록 -->
+                    <section class="mp-section" id="section-wish">
+                        <div class="mp-section-header">
+                            <div class="mp-section-title">
+                                <i class="fa fa-heart"></i>
+                                <h2>찜 목록</h2>
+                                <span class="mp-count" id="wishCount">0</span>
+                            </div>
+                        </div>
+                        <div class="mp-grid" id="wishList">
+                            <div class="mp-empty">
+                                <i class="fa fa-heart"></i>
+                                <p>찜한 상품이 없어요</p>
+                                <a href="main.html" class="mp-btn-fill">상품 보러가기</a>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 최근 본 상품 -->
+                    <section class="mp-section" id="section-recent">
+                        <div class="mp-section-header">
+                            <div class="mp-section-title">
+                                <i class="fa fa-clock"></i>
+                                <h2>최근 본 상품</h2>
+                                <span class="mp-count" id="recentCount">0</span>
+                            </div>
+                            <button class="mp-btn-outline" onclick="clearRecent()">전체 삭제</button>
+                        </div>
+                        <div class="mp-grid" id="recentList">
+                            <div class="mp-empty">
+                                <i class="fa fa-clock"></i>
+                                <p>최근 본 상품이 없어요</p>
+                                <a href="main.html" class="mp-btn-fill">상품 보러가기</a>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">Ground: Zero</div>
+                    <p>쇼핑의 새로운 기준<br />처음부터 다시 세우겠습니다</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>고객 서비스</h4>
+                    <a href="notice.html">공지사항</a>
+                    <a href="customer.html">자주 묻는 질문</a>
+                    <a href="customer.html">1:1 문의</a>
+                </div>
+                <div class="footer-links">
+                    <h4>쇼핑 정보</h4>
+                    <a href="#">이용약관</a>
+                    <a href="#">개인정보처리방침</a>
+                    <a href="#">사업자 정보</a>
+                </div>
+                <div class="footer-contact">
+                    <h4>고객센터</h4>
+                    <div class="cs-number">1588-0000</div>
+                    <p>평일 09:00 ~ 18:00<br />점심 12:00 ~ 13:00</p>
+                    <div class="cs-email"><i class="fa fa-envelope"></i> baseZ00@gmail.co.kr</div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 Ground: Zero Inc. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="toast-wrap" id="toastWrap"></div>
+    <script src="mypage.js"></script>
+</body>
+
+</html>
