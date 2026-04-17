@@ -1,0 +1,39 @@
+/* buy.css */
+.buy-page { background-color: var(--bg-soft); color: var(--black); }
+
+.header-minimal { background: #fff; padding: 20px 0; border-bottom: 1px solid var(--border); margin-bottom: 40px; }
+.header-minimal .container { display: flex; justify-content: space-between; align-items: center; }
+.step-indicator { font-size: 14px; color: var(--gray-light); }
+.step-indicator .active { color: var(--accent); font-weight: 700; }
+
+.buy-container { display: grid; grid-template-columns: 1fr 350px; gap: 30px; align-items: start; }
+
+.buy-section { background: #fff; padding: 30px; border-radius: var(--radius-lg); margin-bottom: 20px; box-shadow: var(--shadow); }
+.section-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; border-bottom: 2px solid var(--black); padding-bottom: 10px; }
+
+/* 상품 리스트 스타일 */
+.order-item { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid var(--border); }
+.order-item:last-child { border-bottom: none; }
+.order-item-img { width: 60px; height: 60px; background: var(--bg-soft); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 30px; }
+
+/* 폼 스타일 */
+.buy-form .form-group { margin-bottom: 15px; }
+.buy-form label { display: block; font-size: 13px; color: var(--gray); margin-bottom: 5px; }
+.buy-form input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; }
+.input-row { display: flex; gap: 8px; }
+
+/* 결제 수단 그리드 */
+.payment-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.pay-item { border: 1px solid var(--border); padding: 15px; text-align: center; border-radius: var(--radius); cursor: pointer; transition: var(--transition); }
+.pay-item input { display: none; }
+.pay-item:has(input:checked) { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); font-weight: 600; }
+
+/* 사이드바 요약 */
+.summary-card { background: var(--black); color: #fff; padding: 25px; border-radius: var(--radius-lg); position: sticky; top: 20px; }
+.summary-line { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; opacity: 0.8; }
+.summary-line.total { opacity: 1; font-size: 18px; margin-top: 15px; color: var(--accent); }
+.btn-pay { width: 100%; padding: 15px; background: var(--accent); border: none; border-radius: var(--radius); color: var(--black); font-weight: 700; font-size: 16px; cursor: pointer; margin-top: 20px; }
+
+@media (max-width: 850px) {
+  .buy-container { grid-template-columns: 1fr; }
+}

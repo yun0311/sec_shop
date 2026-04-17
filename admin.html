@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Dashboard - Ground: Zero</title>
-    <link rel="stylesheet" href="main.css" />
+    <title>Admin Dashboard — Ground: Zero</title>
     <link rel="stylesheet" href="admin.css" />
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap"
@@ -15,79 +14,238 @@
 
 <body class="admin-body">
     <div class="admin-wrapper">
+
         <aside class="admin-sidebar">
             <div class="logo" onclick="location.href='main.html'">Ground: Zero</div>
             <nav class="admin-nav">
                 <ul>
-                    <li class="active"><a href="#stats"><i class="fa fa-chart-line"></i> 대시보드</a></li>
-                    <li><a href="#posts"><i class="fa fa-edit"></i> 게시물 생성</a></li>
-                    <li><a href="#notices"><i class="fa fa-bullhorn"></i> 공지사항 관리</a></li>
-                    <li><a href="#inquiries"><i class="fa fa-question-circle"></i> 문의사항</a></li>
-                    <li><a href="main.html"><i class="fa fa-home"></i> 메인으로 돌아가기</a></li>
+                    <li class="active"><a href="#" onclick="showTab('dashboard')"><i class="fa fa-chart-line"></i>
+                            대시보드</a></li>
+                    <li><a href="#" onclick="showTab('products')"><i class="fa fa-box"></i> 상품 관리</a></li>
+                    <li><a href="#" onclick="showTab('notices')"><i class="fa fa-bullhorn"></i> 공지사항 관리</a></li>
+                    <li><a href="#" onclick="showTab('users')"><i class="fa fa-users"></i> 사용자 관리</a></li>
+                    <li><a href="#" onclick="showTab('inquiries')"><i class="fa fa-question-circle"></i> 문의사항</a></li>
+                    <li><a href="main.html"><i class="fa fa-home"></i> 메인으로</a></li>
                 </ul>
             </nav>
         </aside>
 
         <main class="admin-content">
             <header class="admin-header">
-                <h2>관리자 시스템 <small>Admin Mode</small></h2>
+                <h2 id="pageTitle">대시보드 <small>Admin Mode</small></h2>
                 <div class="admin-user-info">
                     <span><strong>관리자</strong> 님 환영합니다</span>
                     <button class="btn-logout" onclick="location.href='main.html'">로그아웃</button>
                 </div>
             </header>
 
-            <section id="stats" class="admin-section">
+            <!-- 대시보드 -->
+            <section id="tab-dashboard" class="admin-tab-section active">
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <i class="fa fa-users"></i>
+                        <i class="fa fa-box"></i>
                         <div class="stat-info">
-                            <span class="stat-label">총 이용자 수</span>
-                            <span class="stat-value">1,284명</span>
+                            <span class="stat-label">등록 상품 수</span>
+                            <span class="stat-value" id="statProducts">-</span>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <i class="fa fa-file-alt"></i>
+                        <i class="fa fa-bullhorn"></i>
                         <div class="stat-info">
-                            <span class="stat-label">새 게시물</span>
-                            <span class="stat-value">42개</span>
+                            <span class="stat-label">공지사항 수</span>
+                            <span class="stat-value" id="statNotices">-</span>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <i class="fa fa-envelope-open-text"></i>
+                        <i class="fa fa-thumbtack"></i>
+                        <div class="stat-info">
+                            <span class="stat-label">고정 공지</span>
+                            <span class="stat-value" id="statPinned">-</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fa fa-question-circle"></i>
                         <div class="stat-info">
                             <span class="stat-label">미답변 문의</span>
-                            <span class="stat-value">12건</span>
+                            <span class="stat-value" id="statInquiries">-</span>
                         </div>
+                    </div>
+                </div>
+                <div class="admin-card" style="margin-top:12px">
+                    <h3 style="margin-bottom:12px;font-size:15px;font-weight:700;">빠른 이동</h3>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap">
+                        <button class="btn-primary" style="width:auto;padding:10px 20px"
+                            onclick="showTab('products')"><i class="fa fa-plus"></i> 상품 추가</button>
+                        <button class="btn-primary" style="width:auto;padding:10px 20px;background:var(--accent)"
+                            onclick="showTab('notices')"><i class="fa fa-plus"></i> 공지 추가</button>
                     </div>
                 </div>
             </section>
 
-            <section id="posts" class="admin-section">
-                <div class="admin-card">
-                    <h3><i class="fa fa-plus-circle"></i> 신규 콘텐츠 생성</h3>
-                    <form class="admin-form">
-                        <div class="form-group">
-                            <label>구분</label>
-                            <select id="contentType">
-                                <option value="product">일반 게시물(상품)</option>
-                                <option value="notice">공지사항</option>
+            <!-- 상품 관리 -->
+            <section id="tab-products" class="admin-tab-section">
+                <div class="admin-card" style="margin-bottom:24px">
+                    <div class="section-title-bar">
+                        <h3><i class="fa fa-plus-circle"></i> 상품 추가</h3>
+                    </div>
+                    <div class="form-grid-2">
+                        <div>
+                            <label class="form-label">상품명 <span style="color:#e53935">*</span></label>
+                            <input class="form-input" id="p-name" type="text" placeholder="상품 이름" />
+                        </div>
+                        <div>
+                            <label class="form-label">카테고리 <span style="color:#e53935">*</span></label>
+                            <select class="form-input" id="p-category">
+                                <option value="fashion">패션</option>
+                                <option value="beauty">뷰티</option>
+                                <option value="electronics">전자기기</option>
+                                <option value="life">라이프</option>
+                                <option value="food">식품</option>
+                                <option value="sale">세일</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label>제목</label>
-                            <input type="text" placeholder="제목을 입력하세요" />
+                        <div>
+                            <label class="form-label">판매가 (원) <span style="color:#e53935">*</span></label>
+                            <input class="form-input" id="p-price" type="number" placeholder="ex) 59000" />
                         </div>
-                        <div class="form-group">
-                            <label>내용</label>
-                            <textarea rows="5" placeholder="내용을 작성하세요"></textarea>
+                        <div>
+                            <label class="form-label">정가 (원, 선택)</label>
+                            <input class="form-input" id="p-original" type="number" placeholder="ex) 89000" />
                         </div>
-                        <button type="button" class="btn-primary" onclick="alert('생성되었습니다.')">콘텐츠 발행</button>
-                    </form>
+                        <div>
+                            <label class="form-label">이모지</label>
+                            <input class="form-input" id="p-emoji" type="text" placeholder="ex) 👗" maxlength="4"
+                                value="📦" />
+                        </div>
+                        <div>
+                            <label class="form-label">배지</label>
+                            <select class="form-input" id="p-badge">
+                                <option value="">없음</option>
+                                <option value="new">NEW</option>
+                                <option value="hot">HOT</option>
+                                <option value="sale">SALE</option>
+                            </select>
+                        </div>
+                        <div class="form-full">
+                            <label class="form-label">상품 설명</label>
+                            <textarea class="form-input" id="p-desc" placeholder="상품 상세 설명을 입력하세요"></textarea>
+                        </div>
+                    </div>
+                    <button class="btn-primary" style="margin-top:16px;width:auto;padding:12px 28px"
+                        onclick="addProduct()">
+                        <i class="fa fa-upload"></i> 상품 등록
+                    </button>
+                </div>
+                <div class="admin-card">
+                    <div class="section-title-bar">
+                        <h3><i class="fa fa-list"></i> 등록된 상품 <span class="count-badge" id="productCount">0</span></h3>
+                        <button onclick="loadProductList()"
+                            style="font-size:12px;color:var(--gray-light);cursor:pointer;border:none;background:none"><i
+                                class="fa fa-refresh"></i> 새로고침</button>
+                    </div>
+                    <div id="productList">
+                        <div class="loading"><i class="fa fa-spinner fa-spin"></i> 불러오는 중...</div>
+                    </div>
                 </div>
             </section>
+
+            <!-- 공지사항 관리 -->
+            <section id="tab-notices" class="admin-tab-section">
+                <div class="admin-card" style="margin-bottom:24px">
+                    <div class="section-title-bar">
+                        <h3><i class="fa fa-plus-circle"></i> 공지사항 추가</h3>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-full">
+                            <label class="form-label">제목 <span style="color:#e53935">*</span></label>
+                            <input class="form-input" id="n-title" type="text" placeholder="공지사항 제목" />
+                        </div>
+                        <div>
+                            <label class="form-label">카테고리</label>
+                            <select class="form-input" id="n-category">
+                                <option value="service">서비스</option>
+                                <option value="event">이벤트</option>
+                                <option value="system">시스템</option>
+                                <option value="policy">정책변경</option>
+                            </select>
+                        </div>
+                        <div style="display:flex;align-items:flex-end;padding-bottom:2px">
+                            <label class="form-check">
+                                <input type="checkbox" id="n-pinned" />
+                                <span>중요 공지 (상단 고정)</span>
+                            </label>
+                        </div>
+                        <div class="form-full">
+                            <label class="form-label">내용</label>
+                            <textarea class="form-input" id="n-content" style="min-height:130px"
+                                placeholder="공지사항 내용을 입력하세요"></textarea>
+                        </div>
+                    </div>
+                    <button class="btn-primary" style="margin-top:16px;width:auto;padding:12px 28px"
+                        onclick="addNotice()">
+                        <i class="fa fa-upload"></i> 공지 등록
+                    </button>
+                </div>
+                <div class="admin-card">
+                    <div class="section-title-bar">
+                        <h3><i class="fa fa-list"></i> 등록된 공지사항 <span class="count-badge" id="noticeCount">0</span></h3>
+                        <button onclick="loadNoticeList()"
+                            style="font-size:12px;color:var(--gray-light);cursor:pointer;border:none;background:none"><i
+                                class="fa fa-refresh"></i> 새로고침</button>
+                    </div>
+                    <div id="noticeList">
+                        <div class="loading"><i class="fa fa-spinner fa-spin"></i> 불러오는 중...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 사용자 관리 -->
+            <section id="tab-users" class="admin-tab-section">
+                <div class="admin-card">
+                    <div class="section-title-bar">
+                        <h3><i class="fa fa-user-friends"></i> 회원 관리 <span class="count-badge" id="userCount">0</span>
+                        </h3>
+                        <button onclick="loadUserList()"
+                            style="font-size:12px;color:var(--gray-light);cursor:pointer;border:none;background:none"><i
+                                class="fa fa-refresh"></i> 새로고침</button>
+                    </div>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>이메일</th>
+                                <th>이름</th>
+                                <th>가입일</th>
+                                <th>권한</th>
+                                <th>관리</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userList"></tbody>
+                    </table>
+                </div>
+            </section>
+
+
+            <!-- 문의사항 -->
+            <section id="tab-inquiries" class="admin-tab-section">
+                <div class="admin-card">
+                    <div class="section-title-bar">
+                        <h3><i class="fa fa-question-circle"></i> 1:1 문의사항 <span class="count-badge"
+                                id="inquiryCount">0</span></h3>
+                        <button onclick="loadInquiryList()"
+                            style="font-size:12px;color:var(--gray-light);cursor:pointer;border:none;background:none"><i
+                                class="fa fa-refresh"></i> 새로고침</button>
+                    </div>
+                    <div id="inquiryList">
+                        <div class="loading"><i class="fa fa-spinner fa-spin"></i> 불러오는 중...</div>
+                    </div>
+                </div>
+            </section>
+
         </main>
     </div>
+
+    <div class="toast-wrap" id="toastWrap"></div>
+    <script src="admin.js"></script>
 </body>
 
 </html>

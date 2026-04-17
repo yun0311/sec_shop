@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="ko" data-theme="light">
+<html lang="ko">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>공지사항 — Ground: Zero</title>
+    <link rel="stylesheet" href="main.css" />
     <link rel="stylesheet" href="notice.css" />
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap"
@@ -14,7 +15,7 @@
 
 <body>
 
-    <!-- ===== HEADER ===== -->
+    <!-- HEADER -->
     <header id="mainHeader">
         <div class="header-top">
             <div class="container">
@@ -22,14 +23,6 @@
                 <div class="header-top-links">
                     <a href="main.html">홈</a>
                     <a href="customer.html">고객센터</a>
-                    <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()" title="다크모드 전환">
-                        <span class="toggle-track">
-                            <span class="toggle-thumb"></span>
-                            <i class="fa fa-sun toggle-icon sun-icon"></i>
-                            <i class="fa fa-moon toggle-icon moon-icon"></i>
-                        </span>
-                        <span class="toggle-label" id="toggleLabel">다크</span>
-                    </button>
                 </div>
             </div>
         </div>
@@ -40,6 +33,7 @@
                     <a href="main.html">홈</a>
                     <a href="notice.html" class="active">공지사항</a>
                     <a href="customer.html">고객센터</a>
+                    <a href="mypage.html">마이페이지</a>
                 </nav>
                 <div class="header-icons">
                     <a href="main.html" class="icon-btn" title="쇼핑 계속하기"><i class="fa fa-shopping-bag"></i></a>
@@ -48,7 +42,7 @@
         </div>
     </header>
 
-    <!-- ===== PAGE HERO ===== -->
+    <!-- PAGE HERO -->
     <section class="page-hero">
         <div class="container">
             <div class="breadcrumb">
@@ -57,22 +51,22 @@
                 <span>공지사항</span>
             </div>
             <h1><i class="fa fa-bullhorn"></i> 공지사항</h1>
-            <p>LUXMART의 새로운 소식과 중요한 안내를 확인하세요</p>
+            <p>Ground: Zero의 새로운 소식과 중요한 안내를 확인하세요</p>
         </div>
     </section>
 
-    <!-- ===== 공지사항 메인 ===== -->
+    <!-- 공지사항 메인 -->
     <main class="notice-main">
         <div class="container">
 
             <!-- 검색 & 필터 -->
             <div class="notice-toolbar">
                 <div class="notice-tabs" id="noticeTabs">
-                    <button class="tab-btn active" data-cat="all" onclick="filterNotice('all', this)">전체</button>
-                    <button class="tab-btn" data-cat="service" onclick="filterNotice('service', this)">서비스</button>
-                    <button class="tab-btn" data-cat="event" onclick="filterNotice('event', this)">이벤트</button>
-                    <button class="tab-btn" data-cat="system" onclick="filterNotice('system', this)">시스템</button>
-                    <button class="tab-btn" data-cat="policy" onclick="filterNotice('policy', this)">정책변경</button>
+                    <button class="tab-btn active" onclick="filterNotice('all', this)">전체</button>
+                    <button class="tab-btn" onclick="filterNotice('service', this)">서비스</button>
+                    <button class="tab-btn" onclick="filterNotice('event', this)">이벤트</button>
+                    <button class="tab-btn" onclick="filterNotice('system', this)">시스템</button>
+                    <button class="tab-btn" onclick="filterNotice('policy', this)">정책변경</button>
                 </div>
                 <div class="notice-search">
                     <input type="text" id="noticeSearch" placeholder="공지사항 검색..." oninput="searchNotice(this.value)" />
@@ -81,13 +75,18 @@
             </div>
 
             <!-- 고정 공지 -->
-            <div class="notice-pinned" id="noticePinned">
+            <div class="notice-pinned" id="noticePinned" style="display:none">
                 <div class="pinned-label"><i class="fa fa-thumbtack"></i> 중요 공지</div>
                 <div id="pinnedList"></div>
             </div>
 
             <!-- 공지 목록 -->
-            <div class="notice-list" id="noticeList"></div>
+            <div class="notice-list" id="noticeList">
+                <div style="text-align:center;padding:60px 20px;color:#999">
+                    <i class="fa fa-spinner fa-spin" style="font-size:28px;display:block;margin-bottom:12px"></i>
+                    불러오는 중...
+                </div>
+            </div>
 
             <!-- 페이지네이션 -->
             <div class="pagination" id="pagination"></div>
@@ -95,7 +94,7 @@
         </div>
     </main>
 
-    <!-- ===== 상세 모달 ===== -->
+    <!-- 상세 모달 -->
     <div class="modal-overlay" id="noticeModal">
         <div class="modal">
             <div class="modal-header">
@@ -121,9 +120,7 @@
         </div>
     </div>
 
-    <div class="toast-wrap" id="toastWrap"></div>
-
-    <!-- ===== FOOTER ===== -->
+    <!-- FOOTER -->
     <footer>
         <div class="container">
             <div class="footer-grid">
@@ -156,7 +153,7 @@
                     <h4>고객센터</h4>
                     <div class="cs-number">1588-0000</div>
                     <p>평일 09:00 ~ 18:00<br />점심 12:00 ~ 13:00 (주말·공휴일 휴무)</p>
-                    <div class="cs-email"><i class="fa fa-envelope"></i>baseZ00@gmail.co.kr</div>
+                    <div class="cs-email"><i class="fa fa-envelope"></i> baseZ00@gmail.co.kr</div>
                 </div>
             </div>
             <div class="footer-bottom">
@@ -165,6 +162,7 @@
         </div>
     </footer>
 
+    <div class="toast-wrap" id="toastWrap"></div>
     <script src="notice.js"></script>
 </body>
 

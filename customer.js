@@ -251,7 +251,7 @@ function searchFaq(val) {
 /* ============================================
    1:1 문의 제출
    ============================================ */
-function submitInquiry(e) {
+async function submitInquiry(e) {
   e.preventDefault();
   const type = document.getElementById("inqType").value;
   const name = document.getElementById("inqName").value.trim();
@@ -303,21 +303,45 @@ function submitInquiry(e) {
     return;
   }
 
-  // 제출 처리 (실제로는 서버 전송)
   const btn = document.querySelector(".btn-submit");
   btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> 접수 중...';
   btn.disabled = true;
 
-  setTimeout(() => {
+  // 로그인 회원이면 user_id 포함, 비회원이면 null
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+  const user_id = currentUser ? (currentUser.id ?? null) : null;
+
+  try {
+    const res = await fetch("QnA.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type, name, email, subject, content, user_id }),
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      showToast(
+        '<i class="fa fa-check-circle"></i> 문의가 접수되었습니다. 이메일로 답변 드리겠습니다.',
+        "success",
+      );
+      document.querySelector(".inquiry-form").reset();
+      const fileList = document.getElementById("fileList");
+      if (fileList) fileList.innerHTML = "";
+    } else {
+      showToast(
+        `<i class="fa fa-exclamation-circle"></i> ${data.message}`,
+        "error",
+      );
+    }
+  } catch (err) {
     showToast(
-      '<i class="fa fa-check-circle"></i> 문의가 접수되었습니다. 이메일로 답변 드리겠습니다.',
-      "success",
+      '<i class="fa fa-exclamation-circle"></i> 서버 연결 오류, 잠시 후 다시 시도해주세요',
+      "error",
     );
-    document.querySelector(".inquiry-form").reset();
-    document.getElementById("fileList").innerHTML = "";
+  } finally {
     btn.innerHTML = '<i class="fa fa-paper-plane"></i> 문의 접수하기';
     btn.disabled = false;
-  }, 1200);
+  }
 }
 
 /* ============================================

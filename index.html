@@ -1,17 +1,13 @@
 <!DOCTYPE html>
-<html lang="ko">
-
+<html lang="ko" >
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>쇼핑몰</title>
   <link rel="stylesheet" href="main.css" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
-
 <body>
 
   <!-- ===== 모달: 로그인 ===== -->
@@ -22,24 +18,21 @@
       <div class="modal-body">
         <div class="form-group">
           <label>아이디 (이메일)</label>
-          <input type="text" id="loginId" placeholder="이메일을 입력하세요" onkeydown="if(event.key==='Enter')handleLogin()" />
+          <input type="text" id="loginId" placeholder="이메일을 입력하세요" onkeydown="if(event.key==='Enter')handleLogin()"/>
         </div>
         <div class="form-group">
           <label>비밀번호</label>
-          <input type="password" id="loginPw" placeholder="비밀번호를 입력하세요"
-            onkeydown="if(event.key==='Enter')handleLogin()" />
+          <input type="password" id="loginPw" placeholder="비밀번호를 입력하세요" onkeydown="if(event.key==='Enter')handleLogin()"/>
         </div>
         <div class="form-options">
-          <label><input type="checkbox" id="rememberMe" /> 로그인 상태 유지</label>
+          <label><input type="checkbox" id="rememberMe"/> 로그인 상태 유지</label>
           <a href="#" onclick="switchModal('loginModal','findPwModal')">비밀번호 찾기</a>
         </div>
         <button class="btn-primary" onclick="handleLogin()">로그인</button>
         <div class="modal-divider"><span>또는</span></div>
-        <button class="btn-social kakao" onclick="socialLogin('카카오')"><i class="fa-solid fa-comment"></i> 카카오로
-          시작하기</button>
+        <button class="btn-social kakao" onclick="socialLogin('카카오')"><i class="fa-solid fa-comment"></i> 카카오로 시작하기</button>
         <button class="btn-social naver" onclick="socialLogin('네이버')"><i class="fa-solid fa-n"></i> 네이버로 시작하기</button>
-        <p class="modal-footer-text">계정이 없으신가요? <a href="#" onclick="switchModal('loginModal','registerModal')">회원가입</a>
-        </p>
+        <p class="modal-footer-text">계정이 없으신가요? <a href="#" onclick="switchModal('loginModal','registerModal')">회원가입</a></p>
       </div>
     </div>
   </div>
@@ -69,10 +62,8 @@
         </div>
         <div class="form-group">
           <label>비밀번호 <span class="req">*</span></label>
-          <input type="password" id="regPw" placeholder="8자 이상, 영문+숫자+특수문자" oninput="checkPwStrength(this.value)" />
-          <div class="pw-strength" id="pwStrength">
-            <div class="pw-bar" id="pwBar"></div>
-          </div>
+          <input type="password" id="regPw" placeholder="8자 이상, 영문+숫자+특수문자" oninput="checkPwStrength(this.value)"/>
+          <div class="pw-strength" id="pwStrength"><div class="pw-bar" id="pwBar"></div></div>
           <small id="pwMsg" class="hint"></small>
         </div>
         <div class="form-group">
@@ -91,19 +82,17 @@
         </div>
         <div class="form-group">
           <label>주소</label>
-          <input type="text" id="regAddr" placeholder="주소 검색" readonly onclick="fakeAddrSearch()" />
-          <input type="text" id="regAddrDetail" placeholder="상세 주소" style="margin-top:6px" />
+          <input type="text" id="regAddr" placeholder="주소 검색" readonly onclick="fakeAddrSearch()"/>
+          <input type="text" id="regAddrDetail" placeholder="상세 주소" style="margin-top:6px"/>
         </div>
         <div class="terms-box">
-          <label class="check-all"><input type="checkbox" id="agreeAll" onchange="toggleAllAgree(this)" /> <strong>전체
-              동의</strong></label>
-          <label><input type="checkbox" class="agree-item" /> [필수] 이용약관 동의 <a href="#">보기</a></label>
-          <label><input type="checkbox" class="agree-item" /> [필수] 개인정보 수집 및 이용 동의 <a href="#">보기</a></label>
-          <label><input type="checkbox" class="agree-item" /> [선택] 마케팅 정보 수신 동의</label>
+          <label class="check-all"><input type="checkbox" id="agreeAll" onchange="toggleAllAgree(this)"/> <strong>전체 동의</strong></label>
+          <label><input type="checkbox" class="agree-item"/> [필수] 이용약관 동의 <a href="#">보기</a></label>
+          <label><input type="checkbox" class="agree-item"/> [필수] 개인정보 수집 및 이용 동의 <a href="#">보기</a></label>
+          <label><input type="checkbox" class="agree-item"/> [선택] 마케팅 정보 수신 동의</label>
         </div>
         <button class="btn-primary" onclick="handleRegister()">회원가입 완료</button>
-        <p class="modal-footer-text">이미 계정이 있으신가요? <a href="#"
-            onclick="switchModal('registerModal','loginModal')">로그인</a></p>
+        <p class="modal-footer-text">이미 계정이 있으신가요? <a href="#" onclick="switchModal('registerModal','loginModal')">로그인</a></p>
       </div>
     </div>
   </div>
@@ -162,8 +151,7 @@
           <a href="#" id="logoutBtn" onclick="handleLogout()" style="display:none">로그아웃</a>
           <a href="#" id="mypageBtn" style="display:none" onclick="location.href='mypage.html'">마이페이지</a>
           <a href="customer.html">고객센터</a>
-          <a href="notice.html">공지사항</a>
-        </div>
+          </div>
       </div>
     </div>
 
@@ -173,7 +161,8 @@
         <div class="search-wrap">
           <div class="search-box">
             <input type="text" id="searchInput" placeholder="어떤 상품을 찾으시나요?"
-              onkeydown="if(event.key==='Enter')doSearch()" oninput="showSearchSuggest(this.value)" />
+              onkeydown="if(event.key==='Enter')doSearch()"
+              oninput="showSearchSuggest(this.value)"/>
             <button onclick="doSearch()"><i class="fa fa-search"></i></button>
           </div>
           <div class="search-suggest" id="searchSuggest"></div>
@@ -252,7 +241,7 @@
       <button onclick="toggleCart()"><i class="fa fa-times"></i></button>
     </div>
     <div class="cart-items" id="cartItems">
-      <p class="cart-empty"><i class="fa fa-shopping-bag"></i><br />장바구니가 비어 있습니다</p>
+      <p class="cart-empty"><i class="fa fa-shopping-bag"></i><br/>장바구니가 비어 있습니다</p>
     </div>
     <div class="cart-footer" id="cartFooter" style="display:none">
       <div class="cart-total"><span>합계</span><strong id="cartTotal">₩0</strong></div>
@@ -267,10 +256,9 @@
         style="background: linear-gradient(135deg, #0d1b3e 0%, #162447 55%, #1f3a73 100%);">
         <div class="hero-content">
           <span class="hero-sub">NEW ARRIVAL 2025</span>
-          <h1>프리미엄<br /><em>패션의 세계로</em></h1>
+          <h1>프리미엄<br/><em>패션의 세계로</em></h1>
           <p>지금 바로 최신 트렌드를 만나보세요</p>
-          <button class="hero-btn" onclick="filterCategory('fashion')">쇼핑 시작하기 <i
-              class="fa fa-arrow-right"></i></button>
+          <button class="hero-btn" onclick="filterCategory('fashion')">쇼핑 시작하기 <i class="fa fa-arrow-right"></i></button>
         </div>
         <div class="hero-deco">
           <div class="deco-circle c1"></div>
@@ -278,21 +266,22 @@
           <div class="deco-circle c3"></div>
         </div>
       </div>
-      <div class="hero-slide" style="background: linear-gradient(135deg, #0a1628 0%, #1a2e5a 100%);">
+      <div class="hero-slide"
+        style="background: linear-gradient(135deg, #0a1628 0%, #1a2e5a 100%);">
         <div class="hero-content">
           <span class="hero-sub">BEAUTY SALE</span>
-          <h1>뷰티 특가<br /><em>최대 70% 할인</em></h1>
+          <h1>뷰티 특가<br/><em>최대 70% 할인</em></h1>
           <p>인기 브랜드 스킨케어 &amp; 메이크업</p>
           <button class="hero-btn" onclick="filterCategory('beauty')">지금 확인하기 <i class="fa fa-arrow-right"></i></button>
         </div>
       </div>
-      <div class="hero-slide" style="background: linear-gradient(135deg, #0d1b3e 0%, #243b7a 100%);">
+      <div class="hero-slide"
+        style="background: linear-gradient(135deg, #0d1b3e 0%, #243b7a 100%);">
         <div class="hero-content">
           <span class="hero-sub">TECH WEEK</span>
-          <h1>최신 전자기기<br /><em>단독 특가</em></h1>
+          <h1>최신 전자기기<br/><em>단독 특가</em></h1>
           <p>스마트폰, 노트북, 오디오 최저가</p>
-          <button class="hero-btn" onclick="filterCategory('electronics')">바로가기 <i
-              class="fa fa-arrow-right"></i></button>
+          <button class="hero-btn" onclick="filterCategory('electronics')">바로가기 <i class="fa fa-arrow-right"></i></button>
         </div>
       </div>
     </div>
@@ -309,30 +298,14 @@
   <section class="quick-cats">
     <div class="container">
       <div class="qcat-grid">
-        <div class="qcat-item" onclick="filterCategory('all')">
-          <div class="qcat-icon">🏠</div><span>전체</span>
-        </div>
-        <div class="qcat-item" onclick="filterCategory('fashion')">
-          <div class="qcat-icon">👗</div><span>패션</span>
-        </div>
-        <div class="qcat-item" onclick="filterCategory('beauty')">
-          <div class="qcat-icon">💄</div><span>뷰티</span>
-        </div>
-        <div class="qcat-item" onclick="filterCategory('electronics')">
-          <div class="qcat-icon">📱</div><span>전자기기</span>
-        </div>
-        <div class="qcat-item" onclick="filterCategory('life')">
-          <div class="qcat-icon">🛋️</div><span>라이프</span>
-        </div>
-        <div class="qcat-item" onclick="filterCategory('food')">
-          <div class="qcat-icon">🍎</div><span>식품</span>
-        </div>
-        <div class="qcat-item" onclick="filterCategory('sport')">
-          <div class="qcat-icon">⚽</div><span>스포츠</span>
-        </div>
-        <div class="qcat-item" onclick="filterCategory('sale')">
-          <div class="qcat-icon">🔥</div><span>SALE</span>
-        </div>
+        <div class="qcat-item" onclick="filterCategory('all')"><div class="qcat-icon">🏠</div><span>전체</span></div>
+        <div class="qcat-item" onclick="filterCategory('fashion')"><div class="qcat-icon">👗</div><span>패션</span></div>
+        <div class="qcat-item" onclick="filterCategory('beauty')"><div class="qcat-icon">💄</div><span>뷰티</span></div>
+        <div class="qcat-item" onclick="filterCategory('electronics')"><div class="qcat-icon">📱</div><span>전자기기</span></div>
+        <div class="qcat-item" onclick="filterCategory('life')"><div class="qcat-icon">🛋️</div><span>라이프</span></div>
+        <div class="qcat-item" onclick="filterCategory('food')"><div class="qcat-icon">🍎</div><span>식품</span></div>
+        <div class="qcat-item" onclick="filterCategory('sport')"><div class="qcat-icon">⚽</div><span>스포츠</span></div>
+        <div class="qcat-item" onclick="filterCategory('sale')"><div class="qcat-icon">🔥</div><span>SALE</span></div>
       </div>
     </div>
   </section>
@@ -401,7 +374,7 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <div class="logo">Ground: Zero</div>
-          <p>쇼핑의 새로운 기준<br />처음부터 다시 세우겠습니다</p>
+          <p>쇼핑의 새로운 기준<br/>처음부터 다시 세우겠습니다</p>
           <div class="social-links">
             <a href="#"><i class="fab fa-instagram"></i></a>
             <a href="#"><i class="fab fa-youtube"></i></a>
@@ -422,7 +395,7 @@
         <div class="footer-contact">
           <h4>고객센터</h4>
           <div class="cs-number">1588-0000</div>
-          <p>평일 09:00 ~ 18:00<br />점심 12:00 ~ 13:00 (주말·공휴일 휴무)</p>
+          <p>평일 09:00 ~ 18:00<br/>점심 12:00 ~ 13:00 (주말·공휴일 휴무)</p>
           <div class="cs-email"><i class="fa fa-envelope"></i> baseZ00@gmail.co.kr</div>
         </div>
       </div>
@@ -433,51 +406,8 @@
   </footer>
 
   <!-- 토스트 알림 -->
-
-  <!-- 리뷰 모달 -->
-  <div class="modal-overlay" id="reviewModal" onclick="if(event.target===this)closeReviewModal()">
-    <div class="modal modal-lg" style="max-height:85vh;display:flex;flex-direction:column">
-      <button class="modal-close" onclick="closeReviewModal()"><i class="fa fa-times"></i></button>
-      <h2 class="modal-title" style="padding-bottom:0">리뷰</h2>
-      <p id="reviewProductName" style="text-align:center;font-size:13px;color:#999;margin-top:4px;padding:0 28px"></p>
-      <div style="flex:1;overflow-y:auto;padding:16px 28px 0">
-        <div id="reviewStats"></div>
-        <div id="reviewList"></div>
-      </div>
-      <div style="padding:18px 28px;border-top:1px solid #e8e8e8;background:#fafafa">
-        <p style="font-size:13px;font-weight:700;color:#111;margin-bottom:10px">리뷰 작성</p>
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px">
-          <span style="font-size:13px;color:#666">별점</span>
-          <div>
-            <button class="star-btn" onclick="setReviewRating(1)"
-              style="font-size:22px;background:none;border:none;cursor:pointer;color:#c9a84c">★</button>
-            <button class="star-btn" onclick="setReviewRating(2)"
-              style="font-size:22px;background:none;border:none;cursor:pointer;color:#c9a84c">★</button>
-            <button class="star-btn" onclick="setReviewRating(3)"
-              style="font-size:22px;background:none;border:none;cursor:pointer;color:#c9a84c">★</button>
-            <button class="star-btn" onclick="setReviewRating(4)"
-              style="font-size:22px;background:none;border:none;cursor:pointer;color:#c9a84c">★</button>
-            <button class="star-btn" onclick="setReviewRating(5)"
-              style="font-size:22px;background:none;border:none;cursor:pointer;color:#c9a84c">★</button>
-          </div>
-        </div>
-        <div style="display:flex;gap:8px;margin-bottom:8px">
-          <input type="text" id="reviewerName" placeholder="이름"
-            style="width:130px;padding:9px 12px;border:1px solid #e8e8e8;border-radius:6px;font-size:13px;font-family:inherit;outline:none" />
-          <textarea id="reviewContent" placeholder="리뷰 내용을 입력해주세요"
-            style="flex:1;padding:9px 12px;border:1px solid #e8e8e8;border-radius:6px;font-size:13px;font-family:inherit;outline:none;resize:none;height:60px"></textarea>
-        </div>
-        <button onclick="submitReview()"
-          style="width:100%;padding:11px;background:#111;color:#fff;font-size:14px;font-weight:700;border-radius:6px;border:none;cursor:pointer">
-          <i class="fa fa-pen"></i> 리뷰 등록
-        </button>
-      </div>
-    </div>
-  </div>
-
   <div class="toast-wrap" id="toastWrap"></div>
 
   <script src="main.js"></script>
 </body>
-
 </html>

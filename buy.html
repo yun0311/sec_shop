@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주문/결제 | Ground: Zero</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="buy.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Noto+Sans+KR:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+</head>
+
+<body class="buy-page">
+    <header class="header-minimal">
+        <div class="container">
+            <div class="logo" onclick="location.href='main.html'">Ground: Zero</div>
+            <div class="step-indicator">
+                <span>01 장바구니</span> <i class="fa fa-chevron-right"></i>
+                <span class="active">02 주문/결제</span> <i class="fa fa-chevron-right"></i>
+                <span>03 주문완료</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container buy-container">
+        <section class="buy-content">
+            <div class="buy-section">
+                <h3 class="section-title">주문 상품 정보</h3>
+                <div id="orderItemList" class="order-item-list">
+                </div>
+            </div>
+
+            <div class="buy-section">
+                <h3 class="section-title">배송 정보</h3>
+                <div class="buy-form">
+                    <div class="form-group">
+                        <label>받는 사람</label>
+                        <input type="text" id="buyerName" placeholder="이름 입력">
+                    </div>
+                    <div class="form-group">
+                        <label>휴대폰</label>
+                        <input type="tel" id="buyerPhone" placeholder="010-0000-0000">
+                    </div>
+                    <div class="form-group">
+                        <label>주소</label>
+                        <div class="input-row">
+                            <input type="text" id="postcode" placeholder="우편번호" readonly>
+                            <button type="button" class="btn-sub" id="btnAddrSearch">주소찾기</button>
+                        </div>
+                        <input type="text" id="addressMain" placeholder="기본 주소" readonly style="margin-top:8px">
+                        <input type="text" id="addressDetail" placeholder="상세 주소 입력" style="margin-top:8px">
+                    </div>
+                </div>
+            </div>
+
+            <div class="buy-section">
+                <h3 class="section-title">결제 수단</h3>
+                <div class="payment-grid">
+                    <label class="pay-item active">
+                        <input type="radio" name="payMethod" value="card" checked>
+                        <span>신용/체크카드</span>
+                    </label>
+                    <label class="pay-item">
+                        <input type="radio" name="payMethod" value="transfer">
+                        <span>계좌이체</span>
+                    </label>
+                    <label class="pay-item">
+                        <input type="radio" name="payMethod" value="vbank">
+                        <span>무통장입금</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <aside class="buy-sidebar">
+            <div class="summary-card">
+                <h3>최종 결제 금액</h3>
+                <div class="summary-line">
+                    <span>총 상품 금액</span>
+                    <span id="totalProductPrice">₩0</span>
+                </div>
+                <div class="summary-line">
+                    <span>배송비</span>
+                    <span id="deliveryFee">₩0</span>
+                </div>
+                <hr>
+                <div class="summary-line total">
+                    <span>결제 예정 금액</span>
+                    <strong id="finalOrderPrice">₩0</strong>
+                </div>
+                <button type="button" class="btn-pay" onclick="handlePayment()">결제하기</button>
+            </div>
+        </aside>
+    </main>
+
+    <script src="buy.js"></script>
+</body>
+
+</html>

@@ -9,22 +9,31 @@
 let PRODUCTS = [];
 
 async function loadProducts() {
-  const res = await fetch("products.php");
-  const data = await res.json();
-  if (data.success) {
-    PRODUCTS = data.products.map((p) => ({
-      id: p.id,
-      name: p.name,
-      category: p.category,
-      emoji: p.emoji,
-      price: parseInt(p.price),
-      original: parseInt(p.original),
-      discount: parseInt(p.discount),
-      rating: parseFloat(p.rating),
-      reviews: parseInt(p.reviews),
-      badge: p.badge,
-      desc: p.description,
-    }));
+  const [prodRes, reviewRes] = await Promise.all([
+    fetch("products.php"),
+    fetch("review.php"),
+  ]);
+  const prodData = await prodRes.json();
+  const reviewData = await reviewRes.json();
+  const reviewMap = reviewData.success ? reviewData.summary : {};
+
+  if (prodData.success) {
+    PRODUCTS = prodData.products.map((p) => {
+      const rv = reviewMap[p.id] || {};
+      return {
+        id: p.id,
+        name: p.name,
+        category: p.category,
+        emoji: p.emoji,
+        price: parseInt(p.price),
+        original: parseInt(p.original),
+        discount: parseInt(p.discount),
+        rating: rv.avg !== undefined ? rv.avg : parseFloat(p.rating),
+        reviews: rv.count !== undefined ? rv.count : 0,
+        badge: p.badge,
+        desc: p.description,
+      };
+    });
     renderProducts();
   }
 }
@@ -129,7 +138,7 @@ function switchModal(from, to) {
    ============================================ */
 const ADMIN_CONFIG = {
   email: "admin@admin.com",
-  pw: "admin",
+  pw: "admin123",
 };
 
 /* ============================================
@@ -372,15 +381,25 @@ function checkPwStrength(pw) {
     : "";
 }
 
-function fakeAddrSearch() {
-  const addrs = [
-    "서울특별시 강남구 테헤란로 123",
-    "서울특별시 마포구 월드컵북로 456",
-    "경기도 성남시 분당구 판교역로 789",
-  ];
-  document.getElementById("regAddr").value =
-    addrs[Math.floor(Math.random() * addrs.length)];
-  showToast("주소가 선택되었습니다");
+function searchAddress() {
+  new daum.Postcode({
+    oncomplete: function (data) {
+      // 도로명 주소 우선, 없으면 지번 주소
+      const addr = data.roadAddress || data.jibunAddress;
+      const postcode = data.zonecode;
+
+      document.getElementById("regAddr").value = addr;
+      document.getElementById("regPostcode").value = postcode;
+
+      // 상세주소 입력칸으로 포커스 이동
+      document.getElementById("regAddrDetail").focus();
+      showToast('<i class="fa fa-check"></i> 주소가 선택되었습니다');
+    },
+    // 팝업창 스타일 설정
+    width: "100%",
+    height: "100%",
+    animation: true,
+  }).open();
 }
 
 /* ============================================
@@ -759,27 +778,21 @@ function toggleCart() {
   overlay.classList.toggle("show", !isOpen);
 }
 
+/* main.js 내의 checkout 함수를 아래 내용으로 교체하세요 */
+
 function checkout() {
-  if (!state.currentUser) {
-    showToast(
-      '<i class="fa fa-exclamation-circle"></i> 로그인 후 주문하실 수 있습니다',
-      "error",
-    );
-    toggleCart();
-    openModal("loginModal");
+  if (state.cart.length === 0) {
+    showToast("장바구니가 비어 있습니다.", "error");
     return;
   }
-  const sum = state.cart.reduce((s, c) => s + c.price * c.qty, 0);
+  localStorage.setItem("lx_cart_data", JSON.stringify(state.cart));
   showToast(
-    `<i class="fa fa-credit-card"></i> ${formatPrice(sum)} 결제 페이지로 이동합니다`,
+    `<i class="fa fa-credit-card"></i> 결제 페이지로 이동합니다`,
     "success",
   );
-  logSecurityEvent("CHECKOUT_ATTEMPT", {
-    total: sum,
-    items: state.cart.length,
-    timestamp: new Date().toISOString(),
-  });
-  toggleCart();
+  setTimeout(() => {
+    location.href = "buy.html";
+  }, 1000);
 }
 
 /* ============================================
@@ -819,7 +832,7 @@ function openProductModal(id) {
   document.getElementById("pmCat").textContent = getCatLabel(p.category);
   document.getElementById("pmName").textContent = p.name;
   document.getElementById("pmRating").innerHTML =
-    `<span class="stars">${renderStars(p.rating)}</span> <span>${p.rating} (${p.reviews.toLocaleString()}개 리뷰)</span>`;
+    `<span class="stars">${renderStars(p.rating)}</span> <a href="#" onclick="openReviewModal(${p.id}, event)" style="color:var(--gray-light);font-size:13px;text-decoration:underline;text-underline-offset:2px">${p.rating} (${p.reviews.toLocaleString()}개 리뷰)</a>`;
   document.getElementById("pmPrice").textContent = formatPrice(p.price);
   document.getElementById("pmDesc").textContent = p.desc;
   document.getElementById("pmQty").textContent = 1;
@@ -848,16 +861,149 @@ function addToCartFromModal() {
 }
 
 function buyNow() {
-  if (!state.currentUser) {
-    closeModal("productModal");
-    openModal("loginModal");
+  if (!state.productModalData) return;
+  const p = state.productModalData;
+  const qty = state.productModalQty || 1;
+  const existing = state.cart.find((c) => c.id === p.id);
+  if (existing) existing.qty += qty;
+  else state.cart.push({ ...p, qty });
+  updateCartUI();
+  localStorage.setItem("lx_cart_data", JSON.stringify(state.cart));
+  closeModal("productModal");
+  showToast('<i class="fa fa-bolt"></i> 결제 페이지로 이동합니다', "success");
+  setTimeout(() => {
+    location.href = "buy.html";
+  }, 800);
+}
+
+/* ============================================
+   리뷰 모달
+   ============================================ */
+async function openReviewModal(productId, e) {
+  if (e) e.preventDefault();
+  const modal = document.getElementById("reviewModal");
+  if (!modal) return;
+  const p = PRODUCTS.find((x) => x.id === productId);
+  const titleEl = document.getElementById("reviewProductName");
+  if (titleEl && p) titleEl.textContent = p.name;
+  modal.dataset.productId = productId;
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+  const nameEl = document.getElementById("reviewerName");
+  if (nameEl && currentUser) {
+    nameEl.value = currentUser.name || "";
+    nameEl.readOnly = true;
+  } else if (nameEl) {
+    nameEl.value = "";
+    nameEl.readOnly = false;
+  }
+  setReviewRating(5);
+  await loadReviews(productId);
+  modal.classList.add("show");
+  document.body.style.overflow = "hidden";
+}
+
+function closeReviewModal() {
+  document.getElementById("reviewModal").classList.remove("show");
+  document.body.style.overflow = "";
+}
+
+async function loadReviews(productId) {
+  const listEl = document.getElementById("reviewList");
+  const statsEl = document.getElementById("reviewStats");
+  if (!listEl) return;
+  listEl.innerHTML =
+    '<div style="text-align:center;padding:30px;color:#999"><i class="fa fa-spinner fa-spin"></i> 불러오는 중...</div>';
+  try {
+    const res = await fetch(`review.php?product_id=${productId}`);
+    const data = await res.json();
+    if (!data.success) throw new Error();
+    if (statsEl) {
+      const filled = Math.round(data.avg);
+      const stars = "★".repeat(filled) + "☆".repeat(5 - filled);
+      statsEl.innerHTML = `
+        <div style="display:flex;align-items:center;gap:16px;padding:16px;background:#f7f7f7;border-radius:8px;margin-bottom:18px">
+          <div style="text-align:center">
+            <div style="font-size:36px;font-weight:900;color:#111">${data.avg}</div>
+            <div style="color:#c9a84c;font-size:18px">${stars}</div>
+            <div style="font-size:12px;color:#999;margin-top:2px">총 ${data.count}개 리뷰</div>
+          </div>
+        </div>`;
+    }
+    if (!data.reviews.length) {
+      listEl.innerHTML =
+        '<div style="text-align:center;padding:30px;color:#999">아직 리뷰가 없어요. 첫 번째 리뷰를 남겨주세요!</div>';
+      return;
+    }
+    listEl.innerHTML = data.reviews
+      .map(
+        (r) => `
+      <div style="padding:16px 0;border-bottom:1px solid #e8e8e8">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:13px;font-weight:700;color:#111">${r.reviewer}</span>
+            <span style="color:#c9a84c;font-size:13px">${"★".repeat(r.rating)}${"☆".repeat(5 - r.rating)}</span>
+          </div>
+          <span style="font-size:12px;color:#999">${r.created_at ? r.created_at.split(" ")[0] : ""}</span>
+        </div>
+        <p style="font-size:14px;color:#444;line-height:1.7">${r.content}</p>
+      </div>
+    `,
+      )
+      .join("");
+  } catch (e) {
+    listEl.innerHTML =
+      '<div style="text-align:center;padding:30px;color:#999">리뷰를 불러올 수 없습니다</div>';
+  }
+}
+
+let selectedRating = 5;
+function setReviewRating(rating) {
+  selectedRating = rating;
+  document.querySelectorAll(".star-btn").forEach((btn, i) => {
+    btn.textContent = i < rating ? "★" : "☆";
+    btn.style.color = i < rating ? "#c9a84c" : "#ccc";
+  });
+}
+
+async function submitReview() {
+  const modal = document.getElementById("reviewModal");
+  const productId = parseInt(modal.dataset.productId);
+  const reviewer = document.getElementById("reviewerName").value.trim();
+  const content = document.getElementById("reviewContent").value.trim();
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+  if (!reviewer) {
+    showToast("이름을 입력해주세요", "error");
     return;
   }
-  showToast(
-    '<i class="fa fa-bolt"></i> 바로 구매 페이지로 이동합니다',
-    "success",
-  );
-  closeModal("productModal");
+  if (!content) {
+    showToast("리뷰 내용을 입력해주세요", "error");
+    return;
+  }
+  try {
+    const res = await fetch("review.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        product_id: productId,
+        user_id: currentUser ? (currentUser.id ?? null) : null,
+        reviewer,
+        rating: selectedRating,
+        content,
+      }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast('<i class="fa fa-check"></i> 리뷰가 등록되었습니다', "success");
+      document.getElementById("reviewContent").value = "";
+      setReviewRating(5);
+      await loadReviews(productId);
+      await loadProducts();
+    } else {
+      showToast(data.message || "오류가 발생했습니다", "error");
+    }
+  } catch (e) {
+    showToast("서버 연결 오류", "error");
+  }
 }
 
 /* ============================================
@@ -1007,27 +1153,30 @@ document.addEventListener("DOMContentLoaded", () => {
    찜 패널
    ============================================ */
 function toggleWishPanel() {
-  const panel   = document.getElementById('wishPanel');
-  const overlay = document.getElementById('wishOverlay');
-  if (!panel) { buildWishPanel(); return; }
-  const isOpen = panel.classList.contains('open');
-  panel.classList.toggle('open', !isOpen);
-  overlay.classList.toggle('show', !isOpen);
+  const panel = document.getElementById("wishPanel");
+  const overlay = document.getElementById("wishOverlay");
+  if (!panel) {
+    buildWishPanel();
+    return;
+  }
+  const isOpen = panel.classList.contains("open");
+  panel.classList.toggle("open", !isOpen);
+  overlay.classList.toggle("show", !isOpen);
   if (!isOpen) renderWishPanel();
 }
 
 function buildWishPanel() {
   // 오버레이
-  const overlay = document.createElement('div');
-  overlay.id = 'wishOverlay';
-  overlay.className = 'cart-overlay';
+  const overlay = document.createElement("div");
+  overlay.id = "wishOverlay";
+  overlay.className = "cart-overlay";
   overlay.onclick = toggleWishPanel;
   document.body.appendChild(overlay);
 
   // 패널
-  const panel = document.createElement('div');
-  panel.id = 'wishPanel';
-  panel.className = 'cart-panel';
+  const panel = document.createElement("div");
+  panel.id = "wishPanel";
+  panel.className = "cart-panel";
   panel.innerHTML = `
     <div class="cart-header">
       <h3>찜 목록 <span id="wishPanelCount">0</span>개</h3>
@@ -1041,28 +1190,30 @@ function buildWishPanel() {
 
   // 열기
   setTimeout(() => {
-    overlay.classList.add('show');
-    panel.classList.add('open');
+    overlay.classList.add("show");
+    panel.classList.add("open");
     renderWishPanel();
   }, 10);
 }
 
 function renderWishPanel() {
-  const itemsEl  = document.getElementById('wishPanelItems');
-  const countEl  = document.getElementById('wishPanelCount');
+  const itemsEl = document.getElementById("wishPanelItems");
+  const countEl = document.getElementById("wishPanelCount");
   if (!itemsEl) return;
 
   countEl.textContent = state.wishlist.length;
 
   if (!state.wishlist.length) {
-    itemsEl.innerHTML = '<p class="cart-empty"><i class="fa fa-heart"></i><br/>찜한 상품이 없습니다</p>';
+    itemsEl.innerHTML =
+      '<p class="cart-empty"><i class="fa fa-heart"></i><br/>찜한 상품이 없습니다</p>';
     return;
   }
 
-  itemsEl.innerHTML = state.wishlist.map(id => {
-    const p = PRODUCTS.find(p => p.id === id);
-    if (!p) return '';
-    return `
+  itemsEl.innerHTML = state.wishlist
+    .map((id) => {
+      const p = PRODUCTS.find((p) => p.id === id);
+      if (!p) return "";
+      return `
       <div class="cart-item">
         <div class="cart-item-img">${p.emoji}</div>
         <div class="cart-item-info">
@@ -1080,5 +1231,6 @@ function renderWishPanel() {
         </div>
       </div>
     `;
-  }).join('');
+    })
+    .join("");
 }

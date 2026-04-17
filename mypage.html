@@ -107,6 +107,9 @@
                         <a href="#section-cart" class="side-nav-item active" onclick="scrollTo('section-cart')">
                             <i class="fa fa-shopping-cart"></i> 장바구니
                         </a>
+                        <a href="#section-orders" class="side-nav-item" onclick="scrollTo('section-orders')">
+                            <i class="fa fa-box"></i> 주문내역
+                        </a>
                         <a href="#section-wish" class="side-nav-item" onclick="scrollTo('section-wish')">
                             <i class="fa fa-heart"></i> 찜 목록
                         </a>
@@ -150,6 +153,24 @@
                         </div>
                     </section>
 
+                    <!-- 주문내역 -->
+                    <section class="mp-section" id="section-orders">
+                        <div class="mp-section-header">
+                            <div class="mp-section-title">
+                                <i class="fa fa-box"></i>
+                                <h2>주문내역</h2>
+                                <span class="mp-count" id="orderCount">0</span>
+                            </div>
+                        </div>
+                        <div id="orderList">
+                            <div class="mp-empty">
+                                <i class="fa fa-box"></i>
+                                <p>주문내역이 없어요</p>
+                                <a href="main.html" class="mp-btn-fill">쇼핑하러 가기</a>
+                            </div>
+                        </div>
+                    </section>
+
                     <!-- 찜 목록 -->
                     <section class="mp-section" id="section-wish">
                         <div class="mp-section-header">
@@ -183,6 +204,26 @@
                                 <i class="fa fa-clock"></i>
                                 <p>최근 본 상품이 없어요</p>
                                 <a href="main.html" class="mp-btn-fill">상품 보러가기</a>
+                            </div>
+                        </div>
+                    </section>
+
+
+                    <!-- 문의내역 -->
+                    <section class="mp-section" id="section-inquiry">
+                        <div class="mp-section-header">
+                            <div class="mp-section-title">
+                                <i class="fa fa-question-circle"></i>
+                                <h2>1:1 문의내역</h2>
+                                <span class="mp-count" id="inquiryCount">0</span>
+                            </div>
+                            <a href="customer.html" class="mp-btn-outline">문의하기</a>
+                        </div>
+                        <div id="inquiryList">
+                            <div class="mp-empty">
+                                <i class="fa fa-question-circle"></i>
+                                <p>접수된 문의가 없습니다</p>
+                                <a href="customer.html" class="mp-btn-fill">문의하기</a>
                             </div>
                         </div>
                     </section>

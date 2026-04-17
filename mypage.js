@@ -344,4 +344,169 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderCart();
   renderWish();
   renderRecent();
+  if (user.email) loadInquiryList(user.email);
+  if (user.id) loadOrderList(user.id);
 });
+
+/* ============================================
+   주문내역
+   ============================================ */
+const PAY_LABELS = {
+  card: "신용/체크카드",
+  transfer: "계좌이체",
+  vbank: "무통장입금",
+};
+const ORDER_STATUS = {
+  paid: { label: "결제완료", color: "#1565c0", bg: "rgba(21,101,192,0.1)" },
+  shipping: { label: "배송중", color: "#e65100", bg: "rgba(230,81,0,0.1)" },
+  done: { label: "배송완료", color: "#2e7d32", bg: "rgba(46,125,50,0.1)" },
+  cancel: { label: "취소됨", color: "#e53935", bg: "rgba(229,57,53,0.1)" },
+};
+
+async function loadOrderList(userId) {
+  const listEl = document.getElementById("orderList");
+  const countEl = document.getElementById("orderCount");
+  if (!listEl) return;
+
+  try {
+    const res = await fetch(`order.php?user_id=${userId}`);
+    const data = await res.json();
+    if (!data.success) throw new Error();
+
+    if (countEl) countEl.textContent = data.orders.length;
+
+    if (!data.orders.length) {
+      listEl.innerHTML = `
+        <div class="mp-empty">
+          <i class="fa fa-box"></i>
+          <p>주문내역이 없어요</p>
+          <a href="main.html" class="mp-btn-fill">쇼핑하러 가기</a>
+        </div>`;
+      return;
+    }
+
+    listEl.innerHTML = data.orders
+      .map((order) => {
+        const status = ORDER_STATUS[order.status] || ORDER_STATUS.paid;
+        const items = Array.isArray(order.items) ? order.items : [];
+        const date = order.created_at ? order.created_at.split(" ")[0] : "-";
+
+        const itemHTML = items
+          .map(
+            (item) => `
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:28px;width:44px;height:44px;background:var(--bg-soft);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0">${item.emoji || "📦"}</span>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:600;color:var(--black)">${item.name}</div>
+            <div style="font-size:12px;color:var(--gray-light)">${item.qty}개 · ₩${(item.price * item.qty).toLocaleString()}</div>
+          </div>
+        </div>
+      `,
+          )
+          .join("");
+
+        return `
+        <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;background:#fff">
+          <!-- 주문 헤더 -->
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:var(--bg-soft);border-bottom:1px solid var(--border)">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:12px;font-weight:700;color:var(--gray-light)">주문번호 #${order.id}</span>
+              <span style="font-size:12px;color:var(--gray-light)">${date}</span>
+            </div>
+            <span style="padding:3px 10px;border-radius:50px;font-size:11px;font-weight:700;background:${status.bg};color:${status.color}">
+              ${status.label}
+            </span>
+          </div>
+          <!-- 주문 상품 -->
+          <div style="padding:4px 18px">
+            ${itemHTML}
+          </div>
+          <!-- 주문 요약 -->
+          <div style="padding:14px 18px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+            <div style="font-size:13px;color:var(--gray)">
+              <span>${PAY_LABELS[order.pay_method] || order.pay_method}</span>
+              <span style="margin:0 6px">·</span>
+              <span>배송비 ${order.delivery_fee > 0 ? "₩" + Number(order.delivery_fee).toLocaleString() : "무료"}</span>
+            </div>
+            <div style="font-size:16px;font-weight:700;color:var(--black)">
+              총 ₩${Number(order.final_price).toLocaleString()}
+            </div>
+          </div>
+          <!-- 배송지 -->
+          <div style="padding:10px 18px 14px;font-size:12px;color:var(--gray-light)">
+            <i class="fa fa-map-marker-alt" style="color:var(--accent);margin-right:5px"></i>
+            ${order.address_main} ${order.address_detail || ""} · ${order.buyer_name} · ${order.buyer_phone}
+          </div>
+        </div>
+      `;
+      })
+      .join("");
+  } catch (e) {
+    listEl.innerHTML =
+      '<div class="mp-empty"><i class="fa fa-exclamation-triangle"></i><p>주문내역을 불러올 수 없습니다</p></div>';
+  }
+}
+async function loadInquiryList(email) {
+  const listEl = document.getElementById("inquiryList");
+  const countEl = document.getElementById("inquiryCount");
+  if (!listEl) return;
+
+  try {
+    const res = await fetch(`qna.php?email=${encodeURIComponent(email)}`);
+    const data = await res.json();
+
+    if (!data.success) throw new Error();
+
+    if (countEl) countEl.textContent = data.inquiries.length;
+
+    if (!data.inquiries.length) {
+      listEl.innerHTML = `
+        <div class="mp-empty" style="grid-column:1/-1">
+          <i class="fa fa-question-circle"></i>
+          <p>접수된 문의가 없습니다</p>
+          <a href="customer.html" class="mp-btn-fill">문의하기</a>
+        </div>`;
+      return;
+    }
+
+    const INQ_TYPE = {
+      order: "주문·결제",
+      delivery: "배송",
+      return: "반품·교환",
+      product: "상품",
+      account: "계정",
+      other: "기타",
+    };
+
+    listEl.innerHTML = data.inquiries
+      .map(
+        (i) => `
+      <div style="border:1px solid var(--border,#e8e8e8);border-radius:8px;padding:18px 20px;margin-bottom:12px;background:#fff;transition:all 0.18s;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="padding:2px 9px;border-radius:50px;font-size:11px;font-weight:700;background:rgba(21,101,192,0.1);color:#1565c0">
+              ${INQ_TYPE[i.type] || i.type}
+            </span>
+            <span style="font-size:15px;font-weight:600;color:#111">${i.subject}</span>
+          </div>
+          <span style="padding:3px 10px;border-radius:50px;font-size:11px;font-weight:700;
+            ${
+              i.status === "answered"
+                ? "background:rgba(46,125,50,0.1);color:#2e7d32"
+                : "background:rgba(229,57,53,0.1);color:#e53935"
+            }">
+            ${i.status === "answered" ? "✅ 답변완료" : "⏳ 처리중"}
+          </span>
+        </div>
+        <p style="font-size:13px;color:#666;line-height:1.7;margin-bottom:8px;white-space:pre-line">${i.content}</p>
+        <span style="font-size:12px;color:#999">${i.created_at ? i.created_at.split(" ")[0] : ""}</span>
+      </div>
+    `,
+      )
+      .join("");
+  } catch (e) {
+    if (listEl)
+      listEl.innerHTML =
+        '<div class="mp-empty"><i class="fa fa-exclamation-triangle"></i><p>문의내역을 불러올 수 없습니다</p></div>';
+  }
+}
