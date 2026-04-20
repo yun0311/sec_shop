@@ -115,6 +115,12 @@ function closeAllModals() {
     .querySelectorAll(".modal-overlay")
     .forEach((m) => m.classList.remove("show"));
   document.body.style.overflow = "";
+
+  // product_id 제거 (user/pw는 유지)
+  const cp = new URLSearchParams(window.location.search);
+  cp.delete("product_id");
+  const q = cp.toString();
+  history.pushState(null, "", q ? `?${q}` : window.location.pathname);
 }
 
 function openModal(id) {
@@ -187,11 +193,9 @@ async function handleLogin() {
     return;
   }
 
-  const res = await fetch("login.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: id, password: pw }),
-  });
+  // GET 방식 - URL에 이메일/비밀번호 노출 (실습용)
+  const loginUrl = `login.php?email=${encodeURIComponent(id)}&password=${encodeURIComponent(pw)}`;
+  const res = await fetch(loginUrl, { method: "GET" });
   const data = await res.json();
 
   if (data.success) {
@@ -199,6 +203,14 @@ async function handleLogin() {
     localStorage.setItem("currentUser", JSON.stringify(data.user));
     updateUIForLogin(data.user);
     closeModal("loginModal");
+
+    // 로그인 성공 후 URL에 user/pw 노출
+    history.pushState(
+      null,
+      "",
+      `?user=${encodeURIComponent(id)}&pw=${encodeURIComponent(pw)}`,
+    );
+
     showToast(
       `<i class="fa fa-check-circle"></i> ${data.user.name}님, 환영합니다!`,
       "success",
@@ -219,6 +231,9 @@ function handleLogout() {
   if (confirm("로그아웃 하시겠습니까?")) {
     state.currentUser = null;
     localStorage.removeItem("currentUser");
+
+    // URL에서 user/pw/product_id 제거
+    history.pushState(null, "", window.location.pathname);
 
     document.getElementById("loginBtn").style.display = "";
     document.getElementById("registerBtn").style.display = "";
@@ -837,6 +852,11 @@ function openProductModal(id) {
   document.getElementById("pmDesc").textContent = p.desc;
   document.getElementById("pmQty").textContent = 1;
 
+  // URL에 product_id 추가 (GET 형식)
+  const pParams = new URLSearchParams(window.location.search);
+  pParams.set("product_id", id);
+  history.pushState(null, "", `?${pParams.toString()}`);
+
   openModal("productModal");
   logSecurityEvent("PRODUCT_VIEW", { productId: id, productName: p.name });
 }
@@ -1117,10 +1137,47 @@ document.addEventListener("input", (e) => {
    초기화 (단일 DOMContentLoaded)
    ============================================ */
 document.addEventListener("DOMContentLoaded", () => {
-  loadProducts();
+  loadProducts().then(() => {
+    // URL에 product_id 있으면 자동으로 상품 모달 열기
+    const initParams = new URLSearchParams(location.search);
+    const pid = initParams.get("product_id");
+    if (pid) openProductModal(parseInt(pid));
+  });
   startSlider();
   updateCartUI();
-  checkLoginStatus();
+
+  // URL에 user/pw 있으면 자동 로그인 시도
+  const urlParams = new URLSearchParams(location.search);
+  const urlUser = urlParams.get("user");
+  const urlPw = urlParams.get("pw");
+
+  if (urlUser && urlPw) {
+    fetch(
+      `login.php?email=${encodeURIComponent(urlUser)}&password=${encodeURIComponent(urlPw)}`,
+    )
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success) {
+          state.currentUser = data.user;
+          localStorage.setItem("currentUser", JSON.stringify(data.user));
+          updateUIForLogin(data.user);
+          showToast(
+            `<i class="fa fa-check-circle"></i> ${data.user.name}님, 환영합니다!`,
+            "success",
+          );
+        } else {
+          localStorage.removeItem("currentUser");
+          state.currentUser = null;
+          showToast(
+            '<i class="fa fa-exclamation-circle"></i> 잘못된 접근입니다',
+            "error",
+          );
+          history.pushState(null, "", window.location.pathname);
+        }
+      });
+  } else {
+    checkLoginStatus();
+  }
 
   document.addEventListener("click", (e) => {
     if (!e.target.closest(".search-wrap")) hideSuggest();

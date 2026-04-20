@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>문의 상세 — Ground: Zero Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #f7f7f7;
+            color: #111;
+            font-size: 14px;
+            padding: 32px 24px;
+            line-height: 1.6;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e8e8e8;
+            overflow: hidden;
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        .card-header {
+            background: #111;
+            padding: 22px 28px;
+            color: #fff;
+        }
+
+        .card-header .logo {
+            font-size: 18px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: #c9a84c;
+            margin-bottom: 14px;
+        }
+
+        .badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .badge {
+            padding: 3px 11px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .badge-type {
+            background: rgba(21, 101, 192, 0.2);
+            color: #90caf9;
+        }
+
+        .badge-answered {
+            background: rgba(46, 125, 50, 0.2);
+            color: #a5d6a7;
+        }
+
+        .badge-pending {
+            background: rgba(229, 57, 53, 0.2);
+            color: #ef9a9a;
+        }
+
+        .badge-member {
+            background: rgba(21, 101, 192, 0.2);
+            color: #90caf9;
+        }
+
+        .badge-guest {
+            background: rgba(153, 153, 153, 0.2);
+            color: #bbb;
+        }
+
+        .subject {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .meta {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .card-body {
+            padding: 26px 28px;
+        }
+
+        .section-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .content-box {
+            background: #f7f7f7;
+            border-radius: 8px;
+            border: 1px solid #e8e8e8;
+            padding: 18px 20px;
+            font-size: 15px;
+            color: #333;
+            line-height: 1.9;
+            white-space: pre-line;
+            min-height: 100px;
+        }
+
+        .attachments {
+            margin-top: 24px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            background: #f7f7f7;
+            border-radius: 8px;
+            border: 1px solid #e8e8e8;
+            margin-bottom: 8px;
+        }
+
+        .file-item i {
+            color: #c9a84c;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .file-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #111;
+        }
+
+        .file-size {
+            font-size: 11px;
+            color: #999;
+        }
+
+        .file-btns {
+            display: flex;
+            gap: 6px;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .btn-view {
+            padding: 5px 12px;
+            background: rgba(21, 101, 192, 0.1);
+            color: #1565c0;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .btn-dl {
+            padding: 5px 12px;
+            background: rgba(46, 125, 50, 0.1);
+            color: #2e7d32;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .card-footer {
+            padding: 18px 28px;
+            border-top: 1px solid #e8e8e8;
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .btn-answered {
+            padding: 10px 22px;
+            background: #2e7d32;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-pending {
+            padding: 10px 22px;
+            background: #999;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-close {
+            padding: 10px 22px;
+            background: #111;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #999;
+            font-size: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card" id="card">
+        <div class="loading"><i class="fa fa-spinner fa-spin"></i> 불러오는 중...</div>
+    </div>
+
+    <script>
+        const INQ_TYPE = {
+            order: '주문·결제', delivery: '배송', return: '반품·교환',
+            product: '상품', account: '계정', other: '기타'
+        };
+
+        const params = new URLSearchParams(location.search);
+        const inqId = parseInt(params.get('id'));
+
+        fetch('QnA.php')
+            .then(r => r.json())
+            .then(data => {
+                const inq = data.inquiries.find(i => i.id === inqId);
+                if (!inq) {
+                    document.getElementById('card').innerHTML = '<div class="loading">문의를 찾을 수 없습니다</div>';
+                    return;
+                }
+
+                const isMember = inq.user_id || inq.is_member == 1;
+                const isAnswered = inq.status === 'answered';
+                const files = Array.isArray(inq.attachments) ? inq.attachments : [];
+
+                // 첨부파일 HTML
+                let attachHTML = '';
+                if (files.length) {
+                    const items = files.map(f => {
+                        const isImg = f.original && /\.(jpg|jpeg|png|gif|webp)$/i.test(f.original);
+                        const isPdf = f.original && /\.pdf$/i.test(f.original);
+                        const sizeKB = Math.round((f.size || 0) / 1024);
+                        return `
+          <div class="file-item">
+            <i class="fa ${isImg ? 'fa-image' : isPdf ? 'fa-file-pdf' : 'fa-file'}"></i>
+            <div>
+              <div class="file-name">${f.original}</div>
+              <div class="file-size">${sizeKB}KB</div>
+            </div>
+            <div class="file-btns">
+              ${isImg || isPdf ? `<a href="${f.url}" target="_blank" class="btn-view"><i class="fa fa-eye"></i> 보기</a>` : ''}
+              <a href="${f.url}" download="${f.original}" class="btn-dl"><i class="fa fa-download"></i> 다운로드</a>
+            </div>
+          </div>`;
+                    }).join('');
+                    attachHTML = `
+        <div class="attachments">
+          <div class="section-label"><i class="fa fa-paperclip" style="color:#c9a84c;margin-right:5px"></i>첨부파일 (${files.length}개)</div>
+          ${items}
+        </div>`;
+                }
+
+                // 상태 변경 버튼
+                const statusBtn = isAnswered
+                    ? `<button class="btn-pending" onclick="changeStatus('pending')"><i class="fa fa-undo"></i> 미답변으로 변경</button>`
+                    : `<button class="btn-answered" onclick="changeStatus('answered')"><i class="fa fa-check"></i> 답변완료로 변경</button>`;
+
+                document.getElementById('card').innerHTML = `
+      <div class="card-header">
+        <div class="logo">Ground: Zero</div>
+        <div class="badges">
+          <span class="badge badge-type">${INQ_TYPE[inq.type] || inq.type}</span>
+          <span class="badge ${isAnswered ? 'badge-answered' : 'badge-pending'}">${isAnswered ? '✅ 답변완료' : '⏳ 미답변'}</span>
+          <span class="badge ${isMember ? 'badge-member' : 'badge-guest'}">${isMember ? '👤 회원' : '🙍 비회원'}</span>
+        </div>
+        <div class="subject">${inq.subject}</div>
+        <div class="meta">${inq.name} · ${inq.email} · ${inq.created_at ? inq.created_at.split(' ')[0] : ''}</div>
+      </div>
+      <div class="card-body">
+        <div class="section-label">문의 내용</div>
+        <div class="content-box">${inq.content}</div>
+        ${attachHTML}
+      </div>
+      <div class="card-footer">
+        ${statusBtn}
+        <button class="btn-close" onclick="window.close()"><i class="fa fa-times"></i> 닫기</button>
+      </div>
+    `;
+            });
+
+        function changeStatus(status) {
+            fetch('QnA.php', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: inqId, status })
+            })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(status === 'answered' ? '✅ 답변완료로 변경되었습니다' : '⏳ 미답변으로 변경되었습니다');
+                        location.reload();
+                    }
+                });
+        }
+    </script>
+</body>
+
+</html>
