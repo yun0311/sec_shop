@@ -311,11 +311,26 @@ async function submitInquiry(e) {
   const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
   const user_id = currentUser ? (currentUser.id ?? null) : null;
 
+  // FormData로 파일 포함해서 전송
+  const formData = new FormData();
+  formData.append("type", type);
+  formData.append("name", name);
+  formData.append("email", email);
+  formData.append("subject", subject);
+  formData.append("content", content);
+  formData.append("user_id", user_id ?? "");
+
+  if (typeof selectedFiles !== "undefined" && selectedFiles.length) {
+    selectedFiles.forEach((f, i) => formData.append(`file_${i}`, f));
+    formData.append("file_count", selectedFiles.length);
+  } else {
+    formData.append("file_count", 0);
+  }
+
   try {
     const res = await fetch("QnA.php", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type, name, email, subject, content, user_id }),
+      body: formData,
     });
     const data = await res.json();
 
@@ -325,6 +340,7 @@ async function submitInquiry(e) {
         "success",
       );
       document.querySelector(".inquiry-form").reset();
+      if (typeof selectedFiles !== "undefined") selectedFiles = [];
       const fileList = document.getElementById("fileList");
       if (fileList) fileList.innerHTML = "";
     } else {

@@ -474,7 +474,12 @@ async function loadInquiryList() {
               <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer" onclick="showInquiryDetail(${i.id})"
                 title="클릭하여 내용 보기">${i.subject}</td>
               <td>
-                <span class="badge ${i.status === "answered" ? "badge-life" : "badge-system"}">
+                <span style="padding:3px 10px;border-radius:50px;font-size:11px;font-weight:700;
+                  ${
+                    i.status === "answered"
+                      ? "background:rgba(46,125,50,0.1);color:#2e7d32"
+                      : "background:rgba(229,57,53,0.1);color:#e53935"
+                  }">
                   ${i.status === "answered" ? "✅ 답변완료" : "⏳ 미답변"}
                 </span>
               </td>
@@ -508,10 +513,101 @@ function showInquiryDetail(id) {
       const inq = data.inquiries.find((i) => i.id === id);
       if (!inq) return;
       const isMember = inq.user_id || inq.is_member == 1;
-      const memberLabel = isMember ? "👤 회원" : "🙍 비회원";
-      alert(
-        `[${INQ_TYPE[inq.type] || inq.type}] ${inq.subject}\n\n작성자: ${inq.name} (${inq.email})\n회원구분: ${memberLabel}\n접수일: ${inq.created_at}\n\n${inq.content}`,
-      );
+
+      // 기존 모달 제거
+      const existing = document.getElementById("inquiryDetailModal");
+      if (existing) existing.remove();
+
+      const statusColor = inq.status === "answered" ? "#2e7d32" : "#e53935";
+      const statusBg =
+        inq.status === "answered"
+          ? "rgba(46,125,50,0.1)"
+          : "rgba(229,57,53,0.1)";
+      const statusLabel =
+        inq.status === "answered" ? "✅ 답변완료" : "⏳ 미답변";
+
+      const modal = document.createElement("div");
+      modal.id = "inquiryDetailModal";
+      modal.style.cssText =
+        "position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)";
+      modal.innerHTML = `
+        <div style="background:#fff;border-radius:12px;width:100%;max-width:560px;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
+          <!-- 헤더 -->
+          <div style="padding:22px 26px 16px;border-bottom:1px solid #e8e8e8;display:flex;justify-content:space-between;align-items:flex-start">
+            <div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                <span style="padding:2px 9px;border-radius:50px;font-size:11px;font-weight:700;background:rgba(21,101,192,0.1);color:#1565c0">${INQ_TYPE[inq.type] || inq.type}</span>
+                <span style="padding:2px 9px;border-radius:50px;font-size:11px;font-weight:700;background:${statusBg};color:${statusColor}">${statusLabel}</span>
+                <span style="padding:2px 9px;border-radius:50px;font-size:11px;font-weight:700;background:${isMember ? "rgba(21,101,192,0.1)" : "rgba(153,153,153,0.1)"};color:${isMember ? "#1565c0" : "#999"}">
+                  ${isMember ? "👤 회원" : "🙍 비회원"}
+                </span>
+              </div>
+              <h3 style="font-size:17px;font-weight:700;color:#111;margin-bottom:5px">${inq.subject}</h3>
+              <div style="font-size:12px;color:#999">${inq.name} · ${inq.email} · ${inq.created_at ? inq.created_at.split(" ")[0] : ""}</div>
+            </div>
+            <button onclick="document.getElementById('inquiryDetailModal').remove()" style="width:32px;height:32px;border-radius:50%;background:#f7f7f7;border:none;cursor:pointer;font-size:14px;color:#666;flex-shrink:0">✕</button>
+          </div>
+          <!-- 내용 + 첨부파일 -->
+          <div style="padding:22px 26px;overflow-y:auto;flex:1">
+            <p style="font-size:14px;color:#333;line-height:1.9;white-space:pre-line">${inq.content}</p>
+            ${(() => {
+              const files = Array.isArray(inq.attachments)
+                ? inq.attachments
+                : [];
+              if (!files.length) return "";
+              const fileItems = files
+                .map((f) => {
+                  const isImg =
+                    f.original &&
+                    /\.(jpg|jpeg|png|gif|webp)$/i.test(f.original);
+                  const isPdf = f.original && /\.pdf$/i.test(f.original);
+                  const sizeKB = Math.round((f.size || 0) / 1024);
+                  return `<div style="display:flex;align-items:center;gap:10px;padding:10px 13px;background:#f7f7f7;border-radius:6px;border:1px solid #e8e8e8">
+                  <i class="fa ${isImg ? "fa-image" : isPdf ? "fa-file-pdf" : "fa-file"}" style="color:#c9a84c;font-size:18px;flex-shrink:0"></i>
+                  <div style="flex:1;min-width:0">
+                    <div style="font-size:13px;font-weight:600;color:#111;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${f.original}</div>
+                    <div style="font-size:11px;color:#999">${sizeKB}KB</div>
+                  </div>
+                  <div style="display:flex;gap:6px;flex-shrink:0">
+                    ${isImg || isPdf ? `<a href="${f.url}" target="_blank" style="padding:5px 11px;background:rgba(21,101,192,0.1);color:#1565c0;border-radius:4px;font-size:12px;font-weight:600;text-decoration:none"><i class="fa fa-eye"></i> 보기</a>` : ""}
+                    <a href="${f.url}" download="${f.original}" style="padding:5px 11px;background:rgba(46,125,50,0.1);color:#2e7d32;border-radius:4px;font-size:12px;font-weight:600;text-decoration:none"><i class="fa fa-download"></i> 다운로드</a>
+                  </div>
+                </div>`;
+                })
+                .join("");
+              return `<div style="margin-top:18px;padding-top:16px;border-top:1px solid #e8e8e8">
+                <p style="font-size:13px;font-weight:700;color:#111;margin-bottom:10px"><i class="fa fa-paperclip" style="color:#c9a84c;margin-right:5px"></i>첨부파일 (${files.length}개)</p>
+                <div style="display:flex;flex-direction:column;gap:7px">${fileItems}</div>
+              </div>`;
+            })()}
+          </div>
+          <!-- 하단 버튼 -->
+          <div style="padding:16px 26px;border-top:1px solid #e8e8e8;display:flex;justify-content:flex-end;gap:8px">
+            ${
+              inq.status === "pending"
+                ? `<button onclick="markAnswered(${inq.id});document.getElementById('inquiryDetailModal').remove()"
+                  style="padding:9px 20px;background:#2e7d32;color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer">
+                  <i class="fa fa-check"></i> 답변완료로 변경
+                </button>`
+                : `<button onclick="markPending(${inq.id});document.getElementById('inquiryDetailModal').remove()"
+                  style="padding:9px 20px;background:#999;color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer">
+                  <i class="fa fa-undo"></i> 미답변으로 변경
+                </button>`
+            }
+            <button onclick="document.getElementById('inquiryDetailModal').remove()"
+              style="padding:9px 20px;background:#111;color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer">
+              닫기
+            </button>
+          </div>
+        </div>
+      `;
+
+      // 모달 바깥 클릭시 닫기
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) modal.remove();
+      });
+
+      document.body.appendChild(modal);
     });
 }
 
